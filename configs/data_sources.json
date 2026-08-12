@@ -1,0 +1,32 @@
+{
+  "dataset": "LeCoQA",
+  "repository": "https://github.com/oneal2000/LeCoQA",
+  "revision": "main",
+  "license_file": "data/raw/LeCoQA/License",
+  "files": {
+    "queries": {
+      "relative_path": "data/queries.json",
+      "url": "https://raw.githubusercontent.com/oneal2000/LeCoQA/main/data/queries.json"
+    },
+    "corpus": {
+      "relative_path": "data/corpus.jsonl",
+      "url": "https://raw.githubusercontent.com/oneal2000/LeCoQA/main/data/corpus.jsonl"
+    },
+    "train": {
+      "relative_path": "data/example/train.json",
+      "url": "https://raw.githubusercontent.com/oneal2000/LeCoQA/main/data/example/train.json"
+    },
+    "test": {
+      "relative_path": "data/example/test.json",
+      "url": "https://raw.githubusercontent.com/oneal2000/LeCoQA/main/data/example/test.json"
+    },
+    "readme": {
+      "relative_path": "README.md",
+      "url": "https://raw.githubusercontent.com/oneal2000/LeCoQA/main/README.md"
+    },
+    "license": {
+      "relative_path": "License",
+      "url": "https://raw.githubusercontent.com/oneal2000/LeCoQA/main/License"
+    }
+  }
+}

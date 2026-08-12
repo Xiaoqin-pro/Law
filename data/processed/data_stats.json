@@ -1,0 +1,189 @@
+{
+  "dataset": "LeCoQA",
+  "qa_total": 1543,
+  "train_count": 1234,
+  "test_count": 309,
+  "corpus_count": 55348,
+  "average_gold_statutes_per_question": 1.760855,
+  "average_question_length": 27.314323,
+  "average_answer_length": 231.324692,
+  "quality": {
+    "gold_name_mismatch_qa_count": 221,
+    "gold_name_mismatch_pair_count": 593,
+    "gold_name_mismatch_examples": [
+      {
+        "query_id": 3,
+        "statute_ids": [
+          504,
+          795,
+          797,
+          804,
+          805
+        ]
+      },
+      {
+        "query_id": 19,
+        "statute_ids": [
+          46292,
+          52954
+        ]
+      },
+      {
+        "query_id": 27,
+        "statute_ids": [
+          984,
+          990,
+          993,
+          11080
+        ]
+      },
+      {
+        "query_id": 37,
+        "statute_ids": [
+          573,
+          11063,
+          11084,
+          11088
+        ]
+      },
+      {
+        "query_id": 38,
+        "statute_ids": [
+          573,
+          11063,
+          11084,
+          11088
+        ]
+      },
+      {
+        "query_id": 75,
+        "statute_ids": [
+          1115,
+          1129,
+          1133,
+          1210
+        ]
+      },
+      {
+        "query_id": 76,
+        "statute_ids": [
+          1133,
+          1216
+        ]
+      },
+      {
+        "query_id": 77,
+        "statute_ids": [
+          1133,
+          1216
+        ]
+      },
+      {
+        "query_id": 78,
+        "statute_ids": [
+          1148,
+          1225
+        ]
+      },
+      {
+        "query_id": 79,
+        "statute_ids": [
+          1210,
+          1225
+        ]
+      },
+      {
+        "query_id": 80,
+        "statute_ids": [
+          1171,
+          1210
+        ]
+      },
+      {
+        "query_id": 82,
+        "statute_ids": [
+          1115,
+          1210,
+          1222
+        ]
+      },
+      {
+        "query_id": 83,
+        "statute_ids": [
+          1147,
+          1210
+        ]
+      },
+      {
+        "query_id": 84,
+        "statute_ids": [
+          1148,
+          1210
+        ]
+      },
+      {
+        "query_id": 85,
+        "statute_ids": [
+          1133,
+          24512
+        ]
+      },
+      {
+        "query_id": 86,
+        "statute_ids": [
+          1133,
+          24512
+        ]
+      },
+      {
+        "query_id": 88,
+        "statute_ids": [
+          1133,
+          1210
+        ]
+      },
+      {
+        "query_id": 90,
+        "statute_ids": [
+          1132,
+          1133,
+          1223,
+          1231
+        ]
+      },
+      {
+        "query_id": 91,
+        "statute_ids": [
+          1168,
+          1171,
+          1210
+        ]
+      },
+      {
+        "query_id": 92,
+        "statute_ids": [
+          1153,
+          1173,
+          1224,
+          10687,
+          23390
+        ]
+      }
+    ],
+    "note": "gold_statute_names are preserved from LeCoQA. gold_statute_texts and gold_corpus_names are resolved by statute ID."
+  },
+  "query_id_ranges": {
+    "all": [
+      0,
+      1542
+    ],
+    "train": [
+      0,
+      1542
+    ],
+    "test": [
+      1,
+      1536
+    ]
+  }
+}
