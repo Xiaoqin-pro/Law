@@ -110,3 +110,29 @@ Phase 1 通过后，再实现：
 3. RRF Hybrid；
 4. 检索指标 Recall@1/5/10 和 MRR；
 5. 在明确实验设计后接入生成、citation verification 和 claim-level repair。
+
+## Phase 2：检索基线
+
+Phase 2 使用 LeCoQA 官方 test split，包含 BM25、`BAAI/bge-m3` Dense 和 BM25/Dense 的 RRF Hybrid。默认配置见 `configs/retrieval_phase2.json`。
+
+先运行测试：
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
+运行 10 条固定随机种子 smoke test：
+
+```powershell
+python scripts/run_retrieval.py --mode smoke
+```
+
+确认 smoke 输出后运行完整 309 条测试：
+
+```powershell
+python scripts/run_retrieval.py --mode full
+```
+
+结果会写入 `outputs/retrieval/`，包括每个 query 的完整 JSONL 检索结果、指标 CSV、可读 smoke 样本、错误分析和实验 metadata。`outputs/` 不提交到 Git；每个正式实验的 metadata 会记录配置、seed、数据 fingerprint、模型 revision、平台和指标。
+
+Dense 模型第一次运行会下载 `BAAI/bge-m3`。corpus embedding 使用可恢复的 NumPy memmap 分批写入，FAISS 使用精确 inner-product index；中断后重新运行同一配置会复用已经完成的 embedding/index。显存不足时会自动将当前 batch 减半，最低降到 1。

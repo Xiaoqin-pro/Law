@@ -1,0 +1,19 @@
+{
+  "experiment_name": "phase2_retrieval_baselines",
+  "dataset": "LeCoQA",
+  "split": "test",
+  "seed": 42,
+  "top_k": 10,
+  "fusion_pool_k": 50,
+  "rrf_k": 60,
+  "bm25": {
+    "k1": 1.5,
+    "b": 0.75
+  },
+  "dense": {
+    "model_name": "BAAI/bge-m3",
+    "max_length": 512,
+    "batch_size": 8,
+    "normalize_embeddings": true
+  }
+}
