@@ -1,0 +1,32 @@
+{
+  "experiment_name": "phase3_generation_baselines",
+  "dataset": "LeCoQA",
+  "split": "test",
+  "seed": 42,
+  "max_new_tokens": 384,
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "max_input_tokens": 4096,
+  "top_k": 10,
+  "batch_size": 1,
+  "models": {
+    "qwen25_7b": {
+      "model_name": "Qwen/Qwen2.5-7B-Instruct",
+      "quantization": "4bit"
+    },
+    "qwen3_4b": {
+      "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+      "quantization": "4bit"
+    }
+  },
+  "retrieval_inputs": {
+    "bm25": "outputs/retrieval/phase2_full_20260813_010257.bm25.jsonl",
+    "dense": "outputs/retrieval/phase2_full_20260813_010257.dense.jsonl",
+    "hybrid": "outputs/retrieval/phase2_full_20260813_010257.hybrid.jsonl"
+  },
+  "prompt_version": "phase3_v1",
+  "prompt": {
+    "direct": "你是中文法律咨询助手。请准确、谨慎地回答用户问题。如果不能确定，请明确说明。不要编造法条或案件事实。\n\n用户问题：{question}\n\n请给出简洁、直接的中文回答。",
+    "rag": "你是中文法律咨询助手。请只根据下方提供的法条证据回答用户问题。每个法律结论都应尽量对应证据中的法条。若证据不足，请明确说明，不要使用证据之外的法条。\n\n用户问题：{question}\n\n法条证据：\n{evidence}\n\n请给出简洁、直接的中文回答。"
+  }
+}

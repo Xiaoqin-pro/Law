@@ -2,3 +2,4 @@
 # pytest is optional and useful for running the test suite.
 pytest>=8.0,<9.0
 faiss-cpu==1.15.0
+bitsandbytes>=0.46.0,<0.47
