@@ -101,3 +101,16 @@ Phase 2 尚不能支持以下结论：
 5. 汇总 B1–B4 原始结果和 citation error 初步分布。
 
 在 B1–B4 完成前，不进入 Phase 4 claim-level repair 的大规模实现。
+
+## 9. Phase 3 最终完成状态
+
+Phase 3 已经完成，不再处于模型下载阻塞状态：
+
+- Qwen3-4B-Instruct：Direct、BM25 RAG、Dense RAG、Hybrid RAG 各 309 条；309/309 成功。
+- Qwen2.5-7B-Instruct：Direct、BM25 RAG、Dense RAG、Hybrid RAG 各 309 条；309/309 成功。
+- 正式生成记录总数：2472 条；运行错误：0。
+- 两个模型均使用本地权重和固定 4-bit 配置，GPU 显存运行稳定。
+
+自动结果只能确认实验完成性、运行耗时、回答长度和检索覆盖率；不能自动证明法律引用正确。下一步应先进行分层人工/规则复核，比较 Direct、BM25、Dense 和 Hybrid 的 citation failure、unsupported claim 和 collateral error，再决定是否进入 Phase 4。
+
+完整结果汇总见 `outputs/phase3_generation_summary.md`。
