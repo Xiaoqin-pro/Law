@@ -45,6 +45,12 @@ def main() -> int:
     parser.add_argument("--processed-root", type=Path, default=PROJECT_ROOT / "data" / "processed")
     parser.add_argument("--output-root", type=Path, default=PROJECT_ROOT / "outputs" / "generation")
     parser.add_argument("--model-key", choices=("qwen25_7b", "qwen3_4b"), required=True)
+    parser.add_argument(
+        "--model-path",
+        type=Path,
+        default=None,
+        help="Optional local model directory; when set, no remote model lookup is used.",
+    )
     parser.add_argument("--methods", nargs="+", choices=("direct", "bm25", "dense", "hybrid"), default=["direct", "bm25", "dense", "hybrid"])
     parser.add_argument("--mode", choices=("smoke", "full"), default="smoke")
     parser.add_argument("--retrieval-root", type=Path, default=PROJECT_ROOT / "outputs" / "retrieval")
@@ -61,8 +67,9 @@ def main() -> int:
         query_rows = random.Random(seed).sample(query_rows, min(10, len(query_rows)))
     corpus = {int(row["statute_id"]): row for row in load_jsonl(args.processed_root / "corpus.jsonl")}
     model_config = config["models"][args.model_key]
+    model_name = str(args.model_path.resolve()) if args.model_path else model_config["model_name"]
     model = LocalQwenGenerator(
-        model_config["model_name"],
+        model_name,
         cache_dir=args.model_cache,
         max_input_tokens=config["max_input_tokens"],
         max_new_tokens=config["max_new_tokens"],
@@ -89,7 +96,8 @@ def main() -> int:
             "config": config,
             "random_seed": seed,
             "model_key": args.model_key,
-            "model_name": model_config["model_name"],
+            "model_name": model_name,
+            "model_source": "local_path" if args.model_path else "huggingface",
             "model_revision": model.model_revision,
             "dataset_split": config["split"],
             "prompt_version": config["prompt_version"],
