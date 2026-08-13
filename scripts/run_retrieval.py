@@ -95,7 +95,18 @@ def run_retriever(
 
 def save_metrics(path: Path, result_by_retriever: Mapping[str, Sequence[Mapping[str, Any]]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    fieldnames = ["retriever", "query_count", "recall_at_1", "recall_at_5", "recall_at_10", "mrr", "avg_latency_ms"]
+    fieldnames = [
+        "retriever",
+        "query_count",
+        "hit_at_1",
+        "hit_at_5",
+        "hit_at_10",
+        "recall_at_1",
+        "recall_at_5",
+        "recall_at_10",
+        "mrr",
+        "avg_latency_ms",
+    ]
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
@@ -147,7 +158,10 @@ def main() -> int:
     corpus = load_jsonl(args.processed_root / "corpus.jsonl")
     all_queries = load_jsonl(args.processed_root / f"{config['split']}.jsonl")
     queries = smoke_sample(all_queries, 10, seed) if args.mode == "smoke" else all_queries
-    run_id = f"phase2_{args.mode}_{time.strftime('%Y%m%d_%H%M%S')}"
+    configured_id = config.get("experiment_id")
+    run_id = str(configured_id) if configured_id else f"phase2_{args.mode}_{time.strftime('%Y%m%d_%H%M%S')}"
+    if args.mode != "full" and configured_id:
+        run_id = f"{run_id}_{args.mode}"
     args.output_root.mkdir(parents=True, exist_ok=True)
     args.cache_root.mkdir(parents=True, exist_ok=True)
     metadata = {
@@ -193,9 +207,14 @@ def main() -> int:
             device=args.device,
             cache_dir=model_cache,
             normalize_embeddings=dense_config["normalize_embeddings"],
+            pooling_method=dense_config.get("pooling_method", "cls"),
+            embedding_impl_version=dense_config.get("embedding_impl_version", 2),
         )
         vectors, dense_manifest = embedder.encode_corpus_cached(corpus, args.cache_root / "embeddings", batch_size=dense_config["batch_size"])
-        dense_index_path = args.cache_root / f"dense_{dense_manifest['corpus_fingerprint'][:12]}_{dense_manifest['model_revision']}.faiss"
+        dense_index_path = args.cache_root / (
+            f"dense_{dense_manifest['pooling_method']}_v{dense_manifest['embedding_impl_version']}_"
+            f"{dense_manifest['corpus_fingerprint'][:12]}_{dense_manifest['model_revision']}.faiss"
+        )
         if dense_index_path.exists() and not args.no_resume:
             dense = DenseIndex.load(dense_index_path, corpus)
             print(f"Dense FAISS cache hit: {dense_index_path}")

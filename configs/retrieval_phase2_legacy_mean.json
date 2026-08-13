@@ -1,6 +1,6 @@
 {
-  "experiment_name": "phase2_retrieval_baselines",
-  "experiment_id": "phase2_default_cls_v2",
+  "experiment_name": "phase2_retrieval_legacy_meanpool",
+  "experiment_id": "phase2_legacy_meanpool_reproduction",
   "dataset": "LeCoQA",
   "split": "test",
   "seed": 42,
@@ -16,7 +16,7 @@
     "max_length": 512,
     "batch_size": 8,
     "normalize_embeddings": true,
-    "pooling_method": "cls",
-    "embedding_impl_version": 2
+    "pooling_method": "mean",
+    "embedding_impl_version": 1
   }
 }

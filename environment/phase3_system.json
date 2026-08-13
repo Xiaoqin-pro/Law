@@ -1,0 +1,49 @@
+{
+  "python": "3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)]",
+  "python_executable": "E:\\python\\python.exe",
+  "platform": "Windows-11-10.0.22631-SP0",
+  "processor": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD",
+  "packages": {
+    "torch": {
+      "available": true,
+      "version": "2.7.1+cu118"
+    },
+    "transformers": {
+      "available": true,
+      "version": "5.9.0"
+    },
+    "bitsandbytes": {
+      "available": true,
+      "version": "0.46.1"
+    },
+    "numpy": {
+      "available": true,
+      "version": "2.4.4"
+    },
+    "faiss": {
+      "available": true,
+      "version": "1.15.0"
+    },
+    "jieba": {
+      "available": true,
+      "version": "0.42.1"
+    },
+    "FlagEmbedding": {
+      "available": false,
+      "version": "unavailable"
+    },
+    "sentence_transformers": {
+      "available": false,
+      "version": "unavailable"
+    }
+  },
+  "torch_cuda": {
+    "torch_version": "2.7.1+cu118",
+    "cuda_available": true,
+    "cuda_version": "11.8",
+    "device_count": 1,
+    "devices": [
+      "NVIDIA GeForce RTX 4060 Laptop GPU"
+    ]
+  }
+}

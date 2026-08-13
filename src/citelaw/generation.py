@@ -9,6 +9,9 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 
 
+STATUTE_MARKER_RE = re.compile(r"\[法条ID\s+(\d+)\]")
+
+
 def load_jsonl(path: Path) -> List[Dict[str, Any]]:
     rows: List[Dict[str, Any]] = []
     with path.open("r", encoding="utf-8") as handle:
@@ -52,6 +55,66 @@ def render_prompt(
     if method in {"bm25", "dense", "hybrid"}:
         return prompt_templates["rag"].format(question=query["question"], evidence=evidence)
     raise ValueError(f"Unknown generation method: {method}")
+
+
+def apply_chat_template_text(tokenizer: Any, prompt: str) -> str:
+    messages = [{"role": "user", "content": prompt}]
+    if hasattr(tokenizer, "apply_chat_template"):
+        return str(tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True))
+    return prompt
+
+
+def audit_prompt_context(
+    tokenizer: Any,
+    prompt: str,
+    *,
+    max_input_tokens: int = 4096,
+) -> Dict[str, Any]:
+    """Measure which retrieved statute blocks survive the model input limit."""
+
+    encoded_text = apply_chat_template_text(tokenizer, prompt)
+    full = tokenizer(
+        encoded_text,
+        add_special_tokens=False,
+        truncation=False,
+        return_offsets_mapping=True,
+    )
+    full_ids = full["input_ids"]
+    offsets = full.get("offset_mapping")
+    if offsets is None:
+        raise RuntimeError("The generation tokenizer must provide fast-tokenizer offsets for context audit")
+    limit = int(max_input_tokens)
+    visible_token_count = min(len(full_ids), limit)
+    markers = list(STATUTE_MARKER_RE.finditer(encoded_text))
+    visible: List[int] = []
+    fully_visible: List[int] = []
+    partially_visible: List[int] = []
+    for index, marker in enumerate(markers):
+        statute_id = int(marker.group(1))
+        block_start = marker.start()
+        block_end = markers[index + 1].start() if index + 1 < len(markers) else len(encoded_text)
+        block_token_indices = [
+            token_index
+            for token_index, (start, end) in enumerate(offsets)
+            if end > block_start and start < block_end
+        ]
+        if not block_token_indices:
+            continue
+        visible_indices = [token_index for token_index in block_token_indices if token_index < visible_token_count]
+        if visible_indices:
+            visible.append(statute_id)
+            if len(visible_indices) == len(block_token_indices):
+                fully_visible.append(statute_id)
+            else:
+                partially_visible.append(statute_id)
+    return {
+        "input_token_count_before_truncation": len(full_ids),
+        "was_truncated": len(full_ids) > limit,
+        "visible_statute_ids": visible,
+        "fully_visible_statute_ids": fully_visible,
+        "partially_visible_statute_ids": partially_visible,
+        "context_audit_version": "v1_offsets_chat_template",
+    }
 
 
 class LocalQwenGenerator:
@@ -100,13 +163,7 @@ class LocalQwenGenerator:
         self.model_revision = getattr(getattr(self.model, "config", None), "_commit_hash", None) or "unknown"
 
     def generate(self, prompt: str) -> str:
-        messages = [{"role": "user", "content": prompt}]
-        if hasattr(self.tokenizer, "apply_chat_template"):
-            encoded_text = self.tokenizer.apply_chat_template(
-                messages, tokenize=False, add_generation_prompt=True
-            )
-        else:
-            encoded_text = prompt
+        encoded_text = apply_chat_template_text(self.tokenizer, prompt)
         inputs = self.tokenizer(
             encoded_text,
             return_tensors="pt",

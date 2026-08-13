@@ -18,6 +18,7 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from citelaw.generation import (  # noqa: E402
     LocalQwenGenerator,
+    audit_prompt_context,
     build_evidence,
     classify_runtime_error,
     load_generation_records,
@@ -80,12 +81,16 @@ def main() -> int:
     retrieval_rows: Dict[str, Dict[int, Dict[str, Any]]] = {}
     for method in ("bm25", "dense", "hybrid"):
         if method in args.methods:
-            path = PROJECT_ROOT / config["retrieval_inputs"][method]
+            configured_path = Path(config["retrieval_inputs"][method])
+            path = configured_path if configured_path.is_absolute() else PROJECT_ROOT / configured_path
+            if not path.exists():
+                path = args.retrieval_root / configured_path.name
             retrieval_rows[method] = {int(row["query_id"]): row for row in load_jsonl(path)}
 
     args.output_root.mkdir(parents=True, exist_ok=True)
     for method in args.methods:
-        run_id = f"phase3_{args.mode}_{args.model_key}_{method}"
+        run_prefix = str(config.get("run_prefix", "phase3"))
+        run_id = f"{run_prefix}_{args.mode}_{args.model_key}_{method}"
         output_path = args.output_root / f"{run_id}.jsonl"
         metadata_path = args.output_root / f"{run_id}.metadata.json"
         completed = load_generation_records(output_path) if not args.no_resume else {}
@@ -119,6 +124,11 @@ def main() -> int:
                 retrieval_row = retrieval_rows[method][query_id]
                 evidence = build_evidence(retrieval_row, corpus, top_k=config["top_k"])
             prompt = render_prompt(method, query, prompt_templates=config["prompt"], evidence=evidence)
+            context_audit = audit_prompt_context(
+                model.tokenizer,
+                prompt,
+                max_input_tokens=config["max_input_tokens"],
+            )
             started = time.perf_counter()
             try:
                 answer = model.generate(prompt)
@@ -140,6 +150,7 @@ def main() -> int:
                 "error": error,
                 "gold_statute_ids": query["gold_statute_ids"],
                 "latency_ms": round((time.perf_counter() - started) * 1000.0, 4),
+                **context_audit,
             }
             if retrieval_row is not None:
                 record["retrieved_statute_ids"] = [int(r["statute_id"]) for r in retrieval_row["results"]]

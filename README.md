@@ -1,5 +1,11 @@
 # Citelaw
 
+## Current status (2026-08-14)
+
+The reproducibility work has completed the corrected Phase 2.1 retrieval rerun and Phase 3.1 Dense/Hybrid generation rerun. Dense retrieval uses normalized BGE-M3 CLS pooling, and the evaluation now separates Hit@K from gold-statute Recall@K. The corrected generation set contains 1,236 successful records (309 test queries × 2 models × 2 retrieval methods), with no prompt truncation or partially visible statute block.
+
+The machine-readable audit and the exact acceptance results are in [`reports/README.md`](reports/README.md) and [`reports/scientific_audit.json`](reports/scientific_audit.json). Phase 3.5 citation evaluation and Phase 4 training/ablation are intentionally deferred pending review of these baselines.
+
 面向中文法律咨询的可复现实验项目。当前只实现研究方案中的 Phase 0–1：项目骨架、LeCoQA 原始数据准备、统一 JSONL 转换、统计、人工抽样检查和基础测试。
 
 当前阶段暂不训练模型，也不实现 BM25、Dense、Hybrid、生成或验证模块。这样可以先把数据入口和可重复性固定下来，再进入检索实验。

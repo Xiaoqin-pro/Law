@@ -1,6 +1,6 @@
 {
-  "experiment_name": "phase2_retrieval_baselines",
-  "experiment_id": "phase2_default_cls_v2",
+  "experiment_name": "phase2_1_retrieval_bge_m3_cls",
+  "experiment_id": "phase2_1_cls_v2_full",
   "dataset": "LeCoQA",
   "split": "test",
   "seed": 42,

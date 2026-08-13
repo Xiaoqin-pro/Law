@@ -176,7 +176,13 @@ class BM25Index:
 
 
 class DenseEmbedder:
-    """BGE-M3 encoder with GPU/CPU selection and batch-size backoff."""
+    """BGE-M3 encoder with GPU/CPU selection and batch-size backoff.
+
+    BGE-M3's dense embedding contract is the L2-normalized hidden state of
+    the first (``[CLS]``) token.  The pooling method and implementation
+    version are part of the cache identity so a change in embedding semantics
+    cannot silently reuse an older vector cache.
+    """
 
     def __init__(
         self,
@@ -187,11 +193,21 @@ class DenseEmbedder:
         device: Optional[str] = None,
         cache_dir: Optional[Path] = None,
         normalize_embeddings: bool = True,
+        pooling_method: str = "cls",
+        embedding_impl_version: int = 2,
     ) -> None:
         self.model_name = model_name
         self.max_length = int(max_length)
         self.batch_size = int(batch_size)
         self.normalize_embeddings = bool(normalize_embeddings)
+        self.pooling_method = str(pooling_method).lower()
+        if self.pooling_method not in {"cls", "mean"}:
+            raise ValueError(
+                "DenseEmbedder supports CLS pooling and an explicit legacy "
+                "mean-pooling mode; "
+                f"got {pooling_method!r}"
+            )
+        self.embedding_impl_version = int(embedding_impl_version)
         import torch
         from transformers import AutoModel, AutoTokenizer
 
@@ -207,8 +223,14 @@ class DenseEmbedder:
 
     def _pool(self, model_output: Any, attention_mask: Any) -> Any:
         embeddings = model_output.last_hidden_state
-        mask = attention_mask.unsqueeze(-1).expand(embeddings.size()).float()
-        pooled = (embeddings * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1e-9)
+        if self.pooling_method == "cls":
+            # Official BGE-M3 dense retrieval: normalized H[0].
+            pooled = embeddings[:, 0]
+        else:
+            # Kept only to make the historical mean-pooling experiment
+            # reproducible; new experiments must use CLS pooling.
+            mask = attention_mask.unsqueeze(-1).expand(embeddings.size()).float()
+            pooled = (embeddings * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1e-9)
         if self.normalize_embeddings:
             pooled = self.torch.nn.functional.normalize(pooled, p=2, dim=1)
         return pooled
@@ -256,7 +278,10 @@ class DenseEmbedder:
         cache_dir.mkdir(parents=True, exist_ok=True)
         fingerprint = corpus_fingerprint(corpus)
         safe_model = re.sub(r"[^A-Za-z0-9_.-]+", "_", self.model_name)
-        prefix = cache_dir / f"{safe_model}_{fingerprint[:12]}"
+        prefix = cache_dir / (
+            f"{safe_model}_{self.pooling_method}_v{self.embedding_impl_version}_"
+            f"{fingerprint[:12]}"
+        )
         vector_path = prefix.with_suffix(".npy")
         manifest_path = prefix.with_name(prefix.name + ".manifest.json")
         progress_path = prefix.with_name(prefix.name + ".progress.json")
@@ -268,6 +293,8 @@ class DenseEmbedder:
             "count": len(texts),
             "max_length": self.max_length,
             "normalize_embeddings": self.normalize_embeddings,
+            "pooling_method": self.pooling_method,
+            "embedding_impl_version": self.embedding_impl_version,
         }
         if vector_path.exists() and manifest_path.exists():
             saved_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -380,18 +407,31 @@ def retrieval_metrics(
     cutoffs: Sequence[int] = (1, 5, 10),
 ) -> Dict[str, float]:
     if not rows:
-        return {f"recall_at_{cutoff}": 0.0 for cutoff in cutoffs} | {"mrr": 0.0}
-    totals = {f"recall_at_{cutoff}": 0.0 for cutoff in cutoffs}
+        empty: Dict[str, float] = {"mrr": 0.0}
+        for cutoff in cutoffs:
+            empty[f"hit_at_{cutoff}"] = 0.0
+            empty[f"recall_at_{cutoff}"] = 0.0
+        return empty
+    hit_totals = {f"hit_at_{cutoff}": 0.0 for cutoff in cutoffs}
+    recall_totals = {f"recall_at_{cutoff}": 0.0 for cutoff in cutoffs}
     reciprocal_ranks: List[float] = []
     for row in rows:
         gold = {int(value) for value in row["gold_statute_ids"]}
         ranked = [int(result["statute_id"]) for result in row["results"]]
         for cutoff in cutoffs:
-            totals[f"recall_at_{cutoff}"] += float(bool(gold.intersection(ranked[:cutoff])))
+            retrieved = set(ranked[:cutoff])
+            hit_totals[f"hit_at_{cutoff}"] += float(bool(gold.intersection(retrieved)))
+            recall_totals[f"recall_at_{cutoff}"] += (
+                float(len(gold.intersection(retrieved))) / float(len(gold)) if gold else 0.0
+            )
         rank = next((index + 1 for index, statute_id in enumerate(ranked) if statute_id in gold), None)
         reciprocal_ranks.append(1.0 / rank if rank else 0.0)
     count = float(len(rows))
-    return {key: round(value / count, 6) for key, value in totals.items()} | {"mrr": round(sum(reciprocal_ranks) / count, 6)}
+    return (
+        {key: round(value / count, 6) for key, value in hit_totals.items()}
+        | {key: round(value / count, 6) for key, value in recall_totals.items()}
+        | {"mrr": round(sum(reciprocal_ranks) / count, 6)}
+    )
 
 
 def error_analysis(

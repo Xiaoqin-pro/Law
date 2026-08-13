@@ -4,11 +4,13 @@ import sys
 import unittest
 from pathlib import Path
 
+import torch
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from citelaw.retrieval import BM25Index, chinese_tokens, reciprocal_rank_fusion, retrieval_metrics  # noqa: E402
+from citelaw.retrieval import BM25Index, DenseEmbedder, chinese_tokens, reciprocal_rank_fusion, retrieval_metrics  # noqa: E402
 
 
 class RetrievalTests(unittest.TestCase):
@@ -39,8 +41,24 @@ class RetrievalTests(unittest.TestCase):
     def test_metrics_use_any_gold_statute(self) -> None:
         rows = [{"gold_statute_ids": [2, 3], "results": [{"statute_id": 3}, {"statute_id": 9}]}]
         metrics = retrieval_metrics(rows)
-        self.assertEqual(metrics["recall_at_1"], 1.0)
+        self.assertEqual(metrics["hit_at_1"], 1.0)
+        self.assertEqual(metrics["recall_at_1"], 0.5)
         self.assertEqual(metrics["mrr"], 1.0)
+
+    def test_bge_m3_pooling_uses_cls_and_normalizes(self) -> None:
+        embedder = DenseEmbedder.__new__(DenseEmbedder)
+        embedder.torch = torch
+        embedder.normalize_embeddings = True
+        embedder.pooling_method = "cls"
+        output = type("Output", (), {
+            "last_hidden_state": torch.tensor([
+                [[3.0, 4.0], [100.0, 100.0]],
+                [[0.0, 5.0], [100.0, 100.0]],
+            ])
+        })()
+        pooled = embedder._pool(output, torch.ones((2, 2), dtype=torch.long))
+        self.assertTrue(torch.allclose(pooled[0], torch.tensor([0.6, 0.8])))
+        self.assertTrue(torch.allclose(pooled[1], torch.tensor([0.0, 1.0])))
 
 
 if __name__ == "__main__":

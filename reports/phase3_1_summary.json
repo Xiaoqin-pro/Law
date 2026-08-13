@@ -1,0 +1,94 @@
+{
+  "summary_version": "phase3_1_v1",
+  "retrieval_experiment": "phase2_1_cls_v2_full",
+  "retrieval_metrics": {
+    "dense": {
+      "hit_at_1": 0.414239,
+      "hit_at_5": 0.650485,
+      "hit_at_10": 0.71521,
+      "recall_at_1": 0.317907,
+      "recall_at_5": 0.533279,
+      "recall_at_10": 0.596074,
+      "mrr": 0.512704
+    },
+    "hybrid": {
+      "hit_at_1": 0.375405,
+      "hit_at_5": 0.63754,
+      "hit_at_10": 0.705502,
+      "recall_at_1": 0.285578,
+      "recall_at_5": 0.511036,
+      "recall_at_10": 0.584499,
+      "mrr": 0.48261
+    }
+  },
+  "generation": {
+    "qwen3_4b_dense": {
+      "file": "outputs\\generation\\phase3_1_cls_v2_full_qwen3_4b_dense.jsonl",
+      "record_count": 309,
+      "status_counts": {
+        "ok": 309
+      },
+      "truncated_count": 0,
+      "truncation_rate": 0.0,
+      "partial_statute_block_count": 0,
+      "fully_visible_statute_block_count": 3090,
+      "input_token_count_mean": 1019.388,
+      "input_token_count_max": 1788,
+      "artifact_sha256": "4e8cef8b562eef29f06e0868c3399122ca3011ff59dce629e1c1e557ca1c1bcc"
+    },
+    "qwen3_4b_hybrid": {
+      "file": "outputs\\generation\\phase3_1_cls_v2_full_qwen3_4b_hybrid.jsonl",
+      "record_count": 309,
+      "status_counts": {
+        "ok": 309
+      },
+      "truncated_count": 0,
+      "truncation_rate": 0.0,
+      "partial_statute_block_count": 0,
+      "fully_visible_statute_block_count": 3090,
+      "input_token_count_mean": 1156.709,
+      "input_token_count_max": 2994,
+      "artifact_sha256": "8300e2a88c8f7268f8f9aee700aeddecbdd7738bce6ba7be4195d7123d8b5e3b"
+    },
+    "qwen25_7b_dense": {
+      "file": "outputs\\generation\\phase3_1_cls_v2_full_qwen25_7b_dense.jsonl",
+      "record_count": 309,
+      "status_counts": {
+        "ok": 309
+      },
+      "truncated_count": 0,
+      "truncation_rate": 0.0,
+      "partial_statute_block_count": 0,
+      "fully_visible_statute_block_count": 3090,
+      "input_token_count_mean": 1040.388,
+      "input_token_count_max": 1809,
+      "artifact_sha256": "3dc4b62f646708983622881e15247df3654adfe7ee1b9cb2d475e1e9732badeb"
+    },
+    "qwen25_7b_hybrid": {
+      "file": "outputs\\generation\\phase3_1_cls_v2_full_qwen25_7b_hybrid.jsonl",
+      "record_count": 309,
+      "status_counts": {
+        "ok": 309
+      },
+      "truncated_count": 0,
+      "truncation_rate": 0.0,
+      "partial_statute_block_count": 0,
+      "fully_visible_statute_block_count": 3090,
+      "input_token_count_mean": 1177.709,
+      "input_token_count_max": 3015,
+      "artifact_sha256": "10ccbd6c40ef97a74e2370bff950d3158f538b4f8ec13c23b35a153d6efb709c"
+    }
+  },
+  "completion_criteria": {
+    "retrieval_rows_per_method": 309,
+    "generation_rows_per_model_method": 309,
+    "required_status": "ok",
+    "required_context_fields": [
+      "input_token_count_before_truncation",
+      "was_truncated",
+      "visible_statute_ids",
+      "fully_visible_statute_ids",
+      "partially_visible_statute_ids"
+    ]
+  }
+}
