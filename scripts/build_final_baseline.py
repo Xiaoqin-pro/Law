@@ -135,7 +135,7 @@ def main() -> int:
         "git_commit_at_manifest_generation": current_git_commit(),
         "platform": platform.platform(),
         "phase_status": {
-            "phase3_2": "complete_pending_commit",
+            "phase3_2": "complete",
             "phase3_5": "deferred",
             "phase4": "deferred",
         },
@@ -223,7 +223,7 @@ def main() -> int:
         "",
         "## Next stage",
         "",
-        "After this report passes its final checks and is committed, the next allowed stage is Phase 3.5 baseline citation/failure analysis. No citation verifier, claim decomposition, re-retrieval, revision, or repair is implemented in Phase 3.2.",
+        "The next allowed stage is Phase 3.5 baseline citation/failure analysis. No citation verifier, claim decomposition, re-retrieval, revision, or repair is implemented in Phase 3.2.",
     ]
     report_path = args.output_dir / "final_baseline_report.md"
     report_path.write_text("\n".join(report_lines) + "\n", encoding="utf-8")

@@ -8,7 +8,7 @@ The machine-readable audit and the exact acceptance results are in [`reports/REA
 
 ## Phase 3.2 status (2026-08-14)
 
-The final baseline freeze is complete pending commit publication. Gold reconciliation is non-positional and formatting-only: 309/309 queries have deterministic resolved sets, with 267 raw-clean records, 42 order-only conflicts, and 0 unresolved or true-set-conflicted records. The strict Level A/B high-confidence subset contains 11 queries; Level C matches remain separately reported.
+The final baseline freeze is complete. Gold reconciliation is non-positional and formatting-only: 309/309 queries have deterministic resolved sets, with 267 raw-clean records, 42 order-only conflicts, and 0 unresolved or true-set-conflicted records. The strict Level A/B high-confidence subset contains 11 queries; Level C matches remain separately reported.
 
 BM25 v2 was rerun for both Qwen2.5-7B and Qwen3-4B with deterministic complete-statute-block packing. All 618 records are successful, with no prompt truncation or partially visible statute blocks. Dense CLS is the primary retriever candidate; Hybrid remains the comparison baseline. See [`reports/final_baseline_report.md`](reports/final_baseline_report.md) and [`reports/final_baseline_manifest.json`](reports/final_baseline_manifest.json). Phase 3.5 citation analysis and Phase 4 repair/training remain deferred.
 

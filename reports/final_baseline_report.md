@@ -1,7 +1,7 @@
 # Phase 3.2 Final Baseline Freeze
 
 - Dataset: LeCoQA official test split (309 queries)
-- Manifest source commit: `5d32aef0c642772482749e456939eb65e3b2b031`
+- Manifest source commit: `68f00313f80606731c34de8b2928b5162401cf8f`
 - Phase 3.5 citation analysis: deferred
 - Phase 4: deferred
 
@@ -45,4 +45,4 @@ The earlier legacy BM25 output had 4 truncated records. The corrected Dense/Hybr
 
 ## Next stage
 
-After this report passes its final checks and is committed, the next allowed stage is Phase 3.5 baseline citation/failure analysis. No citation verifier, claim decomposition, re-retrieval, revision, or repair is implemented in Phase 3.2.
+The next allowed stage is Phase 3.5 baseline citation/failure analysis. No citation verifier, claim decomposition, re-retrieval, revision, or repair is implemented in Phase 3.2.

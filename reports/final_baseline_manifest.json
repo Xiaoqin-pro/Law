@@ -3,10 +3,10 @@
   "dataset": "LeCoQA",
   "split": "test",
   "query_count": 309,
-  "git_commit_at_manifest_generation": "5d32aef0c642772482749e456939eb65e3b2b031",
+  "git_commit_at_manifest_generation": "68f00313f80606731c34de8b2928b5162401cf8f",
   "platform": "Windows-11-10.0.22631-SP0",
   "phase_status": {
-    "phase3_2": "complete_pending_commit",
+    "phase3_2": "complete",
     "phase3_5": "deferred",
     "phase4": "deferred"
   },
