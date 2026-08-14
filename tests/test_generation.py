@@ -8,7 +8,13 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from citelaw.generation import build_evidence, pack_evidence_to_budget, render_prompt  # noqa: E402
+from citelaw.generation import (  # noqa: E402
+    audit_prompt_context,
+    build_evidence,
+    build_evidence_blocks,
+    pack_evidence_to_budget,
+    render_prompt,
+)
 
 
 class CharacterTokenizer:
@@ -59,6 +65,37 @@ class GenerationTests(unittest.TestCase):
         )
         self.assertEqual(packed["included_statute_ids"], [1])
         self.assertEqual(packed["evidence_packing_version"], "phase3_2_ranked_complete_blocks_v1")
+
+    def test_bm25_marker_is_utf8_and_audit_matches_packed_ids(self) -> None:
+        row = {"results": [{"statute_id": 1}]}
+        corpus = {
+            1: {"statute_id": 1, "statute_name": "A", "statute_text": "one"},
+        }
+        block_text = build_evidence_blocks(row, corpus)[0]["text"]
+        self.assertIn("[法条ID 1]", block_text)
+        self.assertNotIn("娉曟潯", block_text)
+
+        query = {"query_id": 1, "question": "Q"}
+        packed = pack_evidence_to_budget(
+            query,
+            row,
+            corpus,
+            tokenizer=CharacterTokenizer(),
+            prompt_templates={"direct": "", "rag": "Q={question} E={evidence}"},
+            top_k=1,
+            max_input_tokens=200,
+        )
+        prompt = render_prompt(
+            "bm25",
+            query,
+            prompt_templates={"direct": "", "rag": "Q={question} E={evidence}"},
+            evidence=packed["evidence"],
+        )
+        audit = audit_prompt_context(CharacterTokenizer(), prompt, max_input_tokens=200)
+        self.assertEqual(audit["visible_statute_ids"], packed["included_statute_ids"])
+        self.assertEqual(audit["fully_visible_statute_ids"], packed["included_statute_ids"])
+        self.assertEqual(audit["partially_visible_statute_ids"], [])
+        self.assertFalse(audit["was_truncated"])
 
 
 if __name__ == "__main__":

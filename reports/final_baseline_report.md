@@ -1,7 +1,8 @@
-# Phase 3.2 Final Baseline Freeze
+# Phase 3.2.1 BM25 Encoding-Fixed Final Baseline Freeze
 
 - Dataset: LeCoQA official test split (309 queries)
-- Manifest source commit: `68f00313f80606731c34de8b2928b5162401cf8f`
+- Manifest source commit: `0d186257ef96f2abb512bf8499c67a6a8ac1e50c`
+- Phase 3.2.1 BM25 encoding hotfix: complete
 - Phase 3.5 citation analysis: deferred
 - Phase 4: deferred
 
@@ -37,11 +38,11 @@ Dense CLS is the current primary retriever candidate because it is numerically a
 | B3 Dense CLS | Qwen2.5-7B, Qwen3-4B | corrected CLS retrieval | frozen |
 | B4 Hybrid CLS | Qwen2.5-7B, Qwen3-4B | corrected CLS RRF retrieval | frozen comparison baseline |
 
-BM25 v2 acceptance: passed: 618/618 records are successful, with no truncation or partially visible statute blocks.
+BM25 v2 acceptance: passed: 618/618 records are successful, with no truncation or partially visible statute blocks; sum(included_statute_ids)=6174, sum(fully_visible_statute_ids)=6174, marker_missing=0, consistency_failures=0.
 
 ## Context audit
 
-The earlier legacy BM25 output had 4 truncated records. The corrected Dense/Hybrid outputs had none. BM25 v2 is isolated under a new experiment ID and is not allowed to overwrite the legacy artifact.
+The earlier legacy BM25 output had 4 truncated records. The prior Phase 3.2 BM25 v2 output is retained as a legacy pre-encoding-fix artifact. The Phase 3.2.1 BM25 output uses the corrected [法条ID] marker, is isolated under a new experiment ID, and does not overwrite the legacy artifact.
 
 ## Next stage
 

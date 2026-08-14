@@ -20,13 +20,19 @@ GENERATION_ROOT = PROJECT_ROOT / "outputs/generation"
 
 GENERATION_FILES = {
     "qwen25_7b_direct": "phase3_full_qwen25_7b_direct.jsonl",
-    "qwen25_7b_bm25_v2": "phase3_2_bm25_contextsafe_full_qwen25_7b_bm25.jsonl",
+    "qwen25_7b_bm25_v2": "phase3_2_1_bm25_encoding_fixed_full_qwen25_7b_bm25.jsonl",
     "qwen25_7b_dense_cls": "phase3_1_cls_v2_full_qwen25_7b_dense.jsonl",
     "qwen25_7b_hybrid_cls": "phase3_1_cls_v2_full_qwen25_7b_hybrid.jsonl",
     "qwen3_4b_direct": "phase3_full_qwen3_4b_direct.jsonl",
-    "qwen3_4b_bm25_v2": "phase3_2_bm25_contextsafe_full_qwen3_4b_bm25.jsonl",
+    "qwen3_4b_bm25_v2": "phase3_2_1_bm25_encoding_fixed_full_qwen3_4b_bm25.jsonl",
     "qwen3_4b_dense_cls": "phase3_1_cls_v2_full_qwen3_4b_dense.jsonl",
     "qwen3_4b_hybrid_cls": "phase3_1_cls_v2_full_qwen3_4b_hybrid.jsonl",
+}
+
+
+LEGACY_BM25_FILES = {
+    "qwen25_7b_bm25_v2_legacy": "phase3_2_bm25_contextsafe_full_qwen25_7b_bm25.jsonl",
+    "qwen3_4b_bm25_v2_legacy": "phase3_2_bm25_contextsafe_full_qwen3_4b_bm25.jsonl",
 }
 
 
@@ -65,6 +71,22 @@ def summarize_generation(key: str, filename: str) -> Dict[str, Any]:
         if row.get("input_token_count_before_generation", row.get("input_token_count_before_truncation")) is not None
     ]
     partial_count = sum(len(row.get("partially_visible_statute_ids", [])) for row in rows)
+    visible_evidence_id_count = sum(
+        len(row.get("included_statute_ids", [])) if "bm25_v2" in key else len(row.get("fully_visible_statute_ids", []))
+        for row in rows
+    )
+    visible_evidence_consistency_failures = sum(
+        "bm25_v2" in key
+        and (
+            row.get("visible_statute_ids", []) != row.get("included_statute_ids", [])
+            or row.get("fully_visible_statute_ids", []) != row.get("included_statute_ids", [])
+        )
+        for row in rows
+    )
+    evidence_marker_missing_count = sum(
+        "bm25_v2" in key and "[\u6cd5\u6761ID " not in row.get("prompt", "")
+        for row in rows
+    )
     return {
         "key": key,
         "file": str(path.relative_to(PROJECT_ROOT)),
@@ -76,6 +98,9 @@ def summarize_generation(key: str, filename: str) -> Dict[str, Any]:
         "truncated_count": sum(bool(row.get("was_truncated")) for row in rows),
         "partial_statute_block_count": partial_count,
         "fully_visible_statute_block_count": sum(len(row.get("fully_visible_statute_ids", [])) for row in rows),
+        "visible_evidence_id_count": visible_evidence_id_count,
+        "visible_evidence_consistency_failures": visible_evidence_consistency_failures,
+        "evidence_marker_missing_count": evidence_marker_missing_count,
         "input_token_count_mean": round(mean(token_counts), 3) if token_counts else None,
         "input_token_count_max": max(token_counts) if token_counts else None,
         "artifact_sha256": sha256_file(path),
@@ -105,7 +130,7 @@ def read_csv(path: Path) -> List[Dict[str, str]]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--tests-status", default="19/19 passed")
+    parser.add_argument("--tests-status", default="20/20 passed")
     parser.add_argument("--output-dir", type=Path, default=PROJECT_ROOT / "reports")
     args = parser.parse_args()
 
@@ -117,6 +142,16 @@ def main() -> int:
     context_audit = json.loads(context_audit_path.read_text(encoding="utf-8")) if context_audit_path.exists() else {}
     generation = [summarize_generation(key, filename) for key, filename in GENERATION_FILES.items()]
     bm25_v2 = [row for row in generation if "bm25_v2" in row["key"]]
+    legacy_bm25_v2 = [
+        {
+            "key": key,
+            "file": str((GENERATION_ROOT / filename).relative_to(PROJECT_ROOT)),
+            "metadata_file": str((GENERATION_ROOT / filename).with_suffix(".metadata.json").relative_to(PROJECT_ROOT)),
+            "artifact_sha256": sha256_file(GENERATION_ROOT / filename),
+            "metadata_sha256": sha256_file((GENERATION_ROOT / filename).with_suffix(".metadata.json")),
+        }
+        for key, filename in LEGACY_BM25_FILES.items()
+    ]
     bm25_v2_ready = (
         len(bm25_v2) == 2
         and all(
@@ -128,7 +163,7 @@ def main() -> int:
     )
 
     manifest = {
-        "manifest_version": "phase3_2_v1_final_baseline_freeze",
+        "manifest_version": "phase3_2_1_v1_bm25_encoding_fixed_freeze",
         "dataset": "LeCoQA",
         "split": "test",
         "query_count": 309,
@@ -136,6 +171,7 @@ def main() -> int:
         "platform": platform.platform(),
         "phase_status": {
             "phase3_2": "complete",
+            "phase3_2_1": "complete",
             "phase3_5": "deferred",
             "phase4": "deferred",
         },
@@ -158,6 +194,7 @@ def main() -> int:
         "context_audit": {
             "legacy_generation": context_audit.get("method_summary", {}),
             "bm25_v2": bm25_v2,
+            "legacy_bm25_v2_pre_encoding_fix": legacy_bm25_v2,
         },
         "tests": {
             "command": "E:\\python\\python.exe -m unittest discover -s tests -v",
@@ -178,12 +215,28 @@ def main() -> int:
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
+    bm25_visible_total = sum(row["visible_evidence_id_count"] for row in bm25_v2)
+    bm25_fully_visible_total = sum(row["fully_visible_statute_block_count"] for row in bm25_v2)
+    bm25_audit_ready = bm25_v2_ready and all(
+        row["visible_evidence_consistency_failures"] == 0
+        and row["evidence_marker_missing_count"] == 0
+        for row in bm25_v2
+    )
+    bm25_acceptance = (
+        f"BM25 v2 acceptance: passed: 618/618 records are successful, with no truncation or partially visible statute blocks; "
+        f"sum(included_statute_ids)={bm25_visible_total}, sum(fully_visible_statute_ids)={bm25_fully_visible_total}, "
+        "marker_missing=0, consistency_failures=0."
+        if bm25_audit_ready
+        else "BM25 v2 acceptance: pending: requires 618/618 successful records, no truncation, recognized markers, and consistent visible evidence IDs."
+    )
+
     metric_lookup = {(row["gold_definition"], row["retriever"]): row for row in retrieval_rows}
     report_lines = [
-        "# Phase 3.2 Final Baseline Freeze",
+        "# Phase 3.2.1 BM25 Encoding-Fixed Final Baseline Freeze",
         "",
         f"- Dataset: LeCoQA official test split ({manifest['query_count']} queries)",
         f"- Manifest source commit: `{manifest['git_commit_at_manifest_generation']}`",
+        "- Phase 3.2.1 BM25 encoding hotfix: complete",
         "- Phase 3.5 citation analysis: deferred",
         "- Phase 4: deferred",
         "",
@@ -215,11 +268,11 @@ def main() -> int:
         "| B3 Dense CLS | Qwen2.5-7B, Qwen3-4B | corrected CLS retrieval | frozen |",
         "| B4 Hybrid CLS | Qwen2.5-7B, Qwen3-4B | corrected CLS RRF retrieval | frozen comparison baseline |",
         "",
-        f"BM25 v2 acceptance: {'passed: 618/618 records are successful, with no truncation or partially visible statute blocks.' if bm25_v2_ready else 'pending: requires 618/618 successful records, no truncation, and empty `partially_visible_statute_ids`.'}",
+        bm25_acceptance,
         "",
         "## Context audit",
         "",
-        "The earlier legacy BM25 output had 4 truncated records. The corrected Dense/Hybrid outputs had none. BM25 v2 is isolated under a new experiment ID and is not allowed to overwrite the legacy artifact.",
+        "The earlier legacy BM25 output had 4 truncated records. The prior Phase 3.2 BM25 v2 output is retained as a legacy pre-encoding-fix artifact. The Phase 3.2.1 BM25 output uses the corrected [\u6cd5\u6761ID] marker, is isolated under a new experiment ID, and does not overwrite the legacy artifact.",
         "",
         "## Next stage",
         "",

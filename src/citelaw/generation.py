@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 
 
-STATUTE_MARKER_RE = re.compile(r"\[法条ID\s+(\d+)\]")
+STATUTE_MARKER_RE = re.compile(r"\[\u6cd5\u6761ID\s+(\d+)\]")
 
 
 def load_jsonl(path: Path) -> List[Dict[str, Any]]:
@@ -38,7 +38,7 @@ def build_evidence(
         if statute is None:
             continue
         blocks.append(
-            f"[法条ID {statute_id}] {statute['statute_name']}\n{statute['statute_text']}"
+            f"[\u6cd5\u6761ID {statute_id}] {statute['statute_name']}\n{statute['statute_text']}"
         )
     return "\n\n".join(blocks)
 
@@ -59,7 +59,7 @@ def build_evidence_blocks(
             continue
         blocks.append({
             "statute_id": statute_id,
-            "text": f"[娉曟潯ID {statute_id}] {statute['statute_name']}\n{statute['statute_text']}",
+            "text": f"[\u6cd5\u6761ID {statute_id}] {statute['statute_name']}\n{statute['statute_text']}",
         })
     return blocks
 
