@@ -1,7 +1,13 @@
-# Phase 3.5B-1 checkpoint: Human Validation infrastructure
+# Phase 3.5B-1 checkpoint: legacy human-review infrastructure
 
-This checkpoint starts Phase 3.5B-1 without changing the frozen baseline or
-regenerating any answer. The order is intentionally fixed:
+This document is retained as a historical description of the original human
+review route. It is superseded by the Parser v2 automated protocol described
+in `parser_v2/parser_v2_report_zh.md`. The project no longer requires human QA
+to pass this gate, and no human labels are inferred from the model-assisted
+workbook.
+
+The historical order below is not an active execution instruction. The active
+protocol does not change the frozen baseline or regenerate any answer:
 
 1. Complete the 100-row `parser_qa.xlsx` review.
 2. Run `scripts/evaluate_parser_qa.py` and accept Parser QA only if resolved

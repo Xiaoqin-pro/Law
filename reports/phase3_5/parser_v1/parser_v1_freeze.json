@@ -1,0 +1,14 @@
+{
+  "parser_version": "citation_parser_v1",
+  "frozen_release_commit": "b3679ade8b233b71e5d3812dd44184aabee05f8f",
+  "frozen_at_phase": "Phase 3.5 v1 baseline",
+  "v1_conventional_citations": 1829,
+  "v1_resolved": 1465,
+  "v1_unresolved_or_uncertain": 364,
+  "artifact_hashes": {
+    "citation_records.jsonl": "1ee90a1f7471184fa1906936c467af279a7739473e275dd59804ee1edf145b20",
+    "citation_metrics.json": "85a4ff525417ba2887a263e1ea74a04093ec017aabd4d0fd51e6811d8e9cae81",
+    "citation_parser_source": "a50e9bd8a37cd64ccb0a49cabb772b706d3e6a6ab304e7054400644cd8f3fd46"
+  },
+  "note": "This v1 release is immutable; v2 outputs are additive and do not overwrite these artifacts."
+}
