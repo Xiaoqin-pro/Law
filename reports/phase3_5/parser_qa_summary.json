@@ -1,0 +1,220 @@
+{
+  "analysis_version": "phase3_5B1a_parser_qa_v1",
+  "status": "WAITING_FOR_HUMAN_ANNOTATION",
+  "total_rows": 100,
+  "completed_rows": 0,
+  "incomplete_rows": 100,
+  "manual_field_errors": [],
+  "group_counts": {
+    "resolved_citation": 40,
+    "unresolved_or_uncertain_citation": 40,
+    "no_conventional_citation_answer": 20
+  },
+  "group_metrics": {
+    "resolved_citation": {
+      "extraction_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "law_name_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "article_number_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "resolution_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "actually_resolvable": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "parser_error_type": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "notes": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      }
+    },
+    "unresolved_or_uncertain_citation": {
+      "extraction_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "law_name_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "article_number_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "resolution_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "actually_resolvable": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "parser_error_type": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "notes": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      }
+    },
+    "no_conventional_citation_answer": {
+      "extraction_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 20,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "law_name_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 20,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "article_number_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 20,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "resolution_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 20,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "actually_resolvable": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 20,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "parser_error_type": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 20,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "notes": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 20,
+        "observed_n": 0,
+        "accuracy": null
+      }
+    }
+  },
+  "resolved_precision": {
+    "yes": 0,
+    "no": 0,
+    "uncertain": 0,
+    "blank": 40,
+    "observed_n": 0,
+    "accuracy": null
+  },
+  "unresolved_actually_resolvable": {
+    "yes": 0,
+    "no": 0,
+    "uncertain": 0,
+    "blank": 40,
+    "observed_n": 0,
+    "accuracy": null
+  },
+  "no_citation_false_negative_control": {
+    "yes": 0,
+    "no": 0,
+    "uncertain": 0,
+    "blank": 20,
+    "observed_n": 0,
+    "accuracy": null
+  },
+  "error_reason_counts": {},
+  "parser_error_type_counts": {},
+  "systematic_failure_flags": [],
+  "acceptance_rule": "PASS iff all manual fields are complete, resolved precision >= 0.95, and no repeated parser_error_type flag is present.",
+  "note": "This report does not fill or infer human fields. Unresolved/uncertain rows require manual actually_resolvable judgments.",
+  "input_file": "D:\\111\\Desktop\\Law\\reports\\phase3_5\\parser_qa.xlsx",
+  "input_sha256": "31c58947a5b003f1d3d8fa1751f797d6abfb5e525bfd4bdd45a279489a8e0e08"
+}

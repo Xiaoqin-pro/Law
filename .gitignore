@@ -4,6 +4,7 @@ venv/
 __pycache__/
 .pytest_cache/
 *.py[cod]
+node_modules/
 
 # Downloaded/generated dataset files. Recreate them with the scripts in this repo.
 data/raw/LeCoQA/
@@ -15,3 +16,8 @@ __pycache__/
 # Keep small generated inspection artifacts available locally, but avoid noisy logs.
 logs/*.log
 outputs/
+
+# Phase 3.5 workbook previews/build support files
+work/
+reports/phase3_5/manual_audit.xlsx.inspect.ndjson
+reports/phase3_5/parser_qa.xlsx.inspect.ndjson

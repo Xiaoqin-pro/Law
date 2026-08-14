@@ -1,0 +1,46 @@
+{
+  "analysis_version": "phase3_5B1_validation_infrastructure_v1",
+  "frozen_commit": "b3679ade8b233b71e5d3812dd44184aabee05f8f",
+  "generated_at_utc": "2026-08-14T12:13:07.124609+00:00",
+  "phase": "3.5B-1 Human Validation",
+  "parser_qa": {
+    "status": "WAITING_FOR_HUMAN_ANNOTATION",
+    "total_rows": 100,
+    "completed_rows": 0,
+    "summary_json": "parser_qa_summary.json",
+    "summary_report": "parser_qa_summary_zh.md",
+    "independent_precheck": {
+      "status": "PRECHECK_ONLY_NOT_ACCEPTANCE",
+      "resolved_mapping_yes": 40,
+      "warning": "precheck only; not human validation or acceptance"
+    }
+  },
+  "manual_semantic_review": {
+    "status": "WAITING_FOR_HUMAN_ANNOTATION",
+    "total_rows": 120,
+    "completed_rows": 0,
+    "progress_json": "manual_annotation_progress.json"
+  },
+  "scripts": [
+    "scripts/workbook_to_json.mjs",
+    "scripts/parser_qa_independent_precheck.py",
+    "scripts/evaluate_parser_qa.py",
+    "scripts/validate_manual_audit.py",
+    "scripts/run_phase3_5b1_validation.py"
+  ],
+  "inputs": [
+    "parser_qa.xlsx",
+    "manual_audit.xlsx",
+    "manual_audit_data.json",
+    "sampling_manifest.json"
+  ],
+  "outputs": [
+    "parser_qa_summary.json",
+    "parser_qa_summary_zh.md",
+    "parser_qa_independent_precheck.json",
+    "parser_qa_independent_precheck.md",
+    "manual_annotation_progress.json",
+    "phase3_5B1_checkpoint_report.md"
+  ],
+  "stop_rule": "WAITING_FOR_HUMAN_ANNOTATION; do not calculate final semantic prevalence, merge PR #1, or enter Phase 4."
+}

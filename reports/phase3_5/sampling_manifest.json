@@ -1,0 +1,620 @@
+{
+  "sampling_version": "phase3_5B0_stratified_dense_pooled_v2",
+  "seed": 42,
+  "selection_rule": "Pooled Dense CLS across both models; target 15 per S1-S4, with any under-populated quota redistributed to S4 first as the diagnostic negative-control stratum; source stratum and exact n/N weights are retained.",
+  "stratum_available_counts": {
+    "S1_gold_visible_and_gold_cited": 114,
+    "S2_gold_visible_but_not_gold_cited": 107,
+    "S3_gold_not_visible_but_gold_cited": 1,
+    "S4_gold_not_visible_and_not_gold_cited": 87
+  },
+  "stratum_selected_counts": {
+    "S4_gold_not_visible_and_not_gold_cited": 29,
+    "S1_gold_visible_and_gold_cited": 15,
+    "S2_gold_visible_but_not_gold_cited": 15,
+    "S3_gold_not_visible_but_gold_cited": 1
+  },
+  "sampling_design": "stratified diagnostic sample; unweighted manual proportions are not population prevalence",
+  "selected_queries": [
+    {
+      "query_id": 13,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 37,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 41,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 45,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 46,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 54,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 82,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 118,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 136,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 137,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 143,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 158,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 169,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 196,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 200,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 203,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 209,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 217,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 252,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 253,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 287,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 301,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 320,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 346,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 387,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 412,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 461,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 465,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 468,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 516,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 566,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 645,
+      "original_stratum": "S3_gold_not_visible_but_gold_cited",
+      "sampling_stratum": "S3_gold_not_visible_but_gold_cited",
+      "stratum_population_N": 1,
+      "stratum_sample_n": 1,
+      "selection_probability": 1.0,
+      "sampling_weight": 1.0,
+      "selection_reason": "all_available_and_redistributed_quota"
+    },
+    {
+      "query_id": 655,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 687,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 776,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 800,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 804,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 814,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 827,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 853,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 861,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 870,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 880,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 884,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 923,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 972,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 980,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 983,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 992,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 1063,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 1092,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 1111,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 1188,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 1199,
+      "original_stratum": "S1_gold_visible_and_gold_cited",
+      "sampling_stratum": "S1_gold_visible_and_gold_cited",
+      "stratum_population_N": 114,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.13157894736842105,
+      "sampling_weight": 7.6,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 1224,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 1286,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 1305,
+      "original_stratum": "S2_gold_visible_but_not_gold_cited",
+      "sampling_stratum": "S2_gold_visible_but_not_gold_cited",
+      "stratum_population_N": 107,
+      "stratum_sample_n": 15,
+      "selection_probability": 0.14018691588785046,
+      "sampling_weight": 7.133333333333334,
+      "selection_reason": "target_quota"
+    },
+    {
+      "query_id": 1351,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 1381,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    },
+    {
+      "query_id": 1501,
+      "original_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "sampling_stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "stratum_population_N": 87,
+      "stratum_sample_n": 29,
+      "selection_probability": 0.3333333333333333,
+      "sampling_weight": 3.0,
+      "selection_reason": "redistributed_quota_from_underpopulated_stratum"
+    }
+  ]
+}

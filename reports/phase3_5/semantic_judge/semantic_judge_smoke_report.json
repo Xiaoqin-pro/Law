@@ -1,0 +1,76 @@
+{
+  "analysis_version": "phase3_5B1_semantic_judge_smoke_v1",
+  "input_smoke_status": "PASS",
+  "judge_execution_status": "BLOCKED_MISSING_INDEPENDENT_MODEL",
+  "checks": {
+    "ten_cases_selected": true,
+    "all_selected_cases_have_questions_and_answers": true,
+    "model_identity_and_automatic_category_blinded": true,
+    "identity_map_separate": true
+  },
+  "selected_cases": [
+    {
+      "answer_id": "answer_001",
+      "stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "has_conventional_citation": false
+    },
+    {
+      "answer_id": "answer_002",
+      "stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "has_conventional_citation": true
+    },
+    {
+      "answer_id": "answer_005",
+      "stratum": "S1_gold_visible_and_gold_cited",
+      "has_conventional_citation": true
+    },
+    {
+      "answer_id": "answer_008",
+      "stratum": "S1_gold_visible_and_gold_cited",
+      "has_conventional_citation": false
+    },
+    {
+      "answer_id": "answer_009",
+      "stratum": "S2_gold_visible_but_not_gold_cited",
+      "has_conventional_citation": false
+    },
+    {
+      "answer_id": "answer_053",
+      "stratum": "S2_gold_visible_but_not_gold_cited",
+      "has_conventional_citation": true
+    },
+    {
+      "answer_id": "answer_003",
+      "stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "has_conventional_citation": false
+    },
+    {
+      "answer_id": "answer_004",
+      "stratum": "S4_gold_not_visible_and_not_gold_cited",
+      "has_conventional_citation": false
+    },
+    {
+      "answer_id": "answer_006",
+      "stratum": "S1_gold_visible_and_gold_cited",
+      "has_conventional_citation": true
+    },
+    {
+      "answer_id": "answer_007",
+      "stratum": "S1_gold_visible_and_gold_cited",
+      "has_conventional_citation": true
+    }
+  ],
+  "forbidden_key_leakage": [],
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "gpu_memory_gb": 8,
+    "gpu_memory_total_mib_verified_by_nvidia_smi": 8188,
+    "system_memory_gb": 16
+  },
+  "available_local_instruction_models": [
+    "Qwen2.5-7B-Instruct (already evaluated baseline; excluded as Judge)",
+    "Qwen3-4B-Instruct-2507 (already evaluated baseline; excluded as Judge)"
+  ],
+  "required_next_authority": "Provide or explicitly authorize an independent instruction model/API. Do not rent paid GPU without approval.",
+  "note": "No semantic labels were generated. This is an input/schema smoke test, not a semantic evaluation and not human validation."
+}

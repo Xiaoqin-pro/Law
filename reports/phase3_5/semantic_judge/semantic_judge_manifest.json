@@ -1,0 +1,29 @@
+{
+  "analysis_version": "phase3_5B1_independent_semantic_judge_prepare_v1",
+  "status": "INPUTS_PREPARED_NO_LABELS_FILLED",
+  "frozen_commit": "b3679ade8b233b71e5d3812dd44184aabee05f8f",
+  "parser_version": "citation_parser_v2",
+  "answer_count": 120,
+  "scope": "60 stratified queries x 2 Dense models = 120 answers",
+  "methods_in_judge_input": [
+    "dense"
+  ],
+  "model_identity_blinded": true,
+  "automatic_failure_categories_blinded": true,
+  "prompt_sha256": "1da90f4a5b21ec9600de8905163276143ac7c13dc7c20e5f48eaaa74173045d1",
+  "input_sha256": "30b33ccb8ec74bd27b78d784d885ec4c1e424e401aee807284faa21879e4be3a",
+  "identity_map_sha256": "48c1e7d425283334aca2634d9d95404a8988f2c634f6f50d1ac8ae3de9f0784e",
+  "judge_model": "independent local instruction model pending; no labels generated",
+  "judge_revision": "not executed",
+  "temperature": 0,
+  "latency_ms": null,
+  "input_tokens": null,
+  "output_tokens": null,
+  "telemetry_note": "No semantic labels were generated because no independent local judge model is currently available.",
+  "human_validation": false,
+  "outputs": [
+    "outputs/phase3_5/semantic_model_assisted/semantic_judge_inputs_blinded.jsonl",
+    "outputs/phase3_5/semantic_model_assisted/semantic_judge_identity_map.jsonl",
+    "outputs/phase3_5/semantic_model_assisted/semantic_judge_prompt_v1.txt"
+  ]
+}

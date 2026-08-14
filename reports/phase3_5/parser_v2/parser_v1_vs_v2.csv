@@ -1,0 +1,10 @@
+﻿scope,model,method,method_label,v1_citation_count,v1_resolved_count,v1_unresolved_or_uncertain_count,v2_citation_count,v2_high_confidence_resolved_count,v2_unresolved_or_uncertain_count,v2_medium_confidence_resolved_count,v2_low_confidence_resolved_count,v1_unresolved_to_v2_high_confidence_resolved_paired,paired_occurrence_count
+model_method,qwen25_7b,direct,Direct,16,9,7,16,13,3,0,0,4,16
+model_method,qwen25_7b,bm25,BM25 encoding-fixed,234,211,23,234,233,1,0,0,22,234
+model_method,qwen25_7b,dense,Dense CLS,269,246,23,269,264,5,0,0,18,269
+model_method,qwen25_7b,hybrid,Hybrid CLS,276,252,24,276,271,5,0,0,19,276
+model_method,qwen3_4b,direct,Direct,295,177,118,295,293,2,0,0,116,295
+model_method,qwen3_4b,bm25,BM25 encoding-fixed,242,195,47,242,225,17,0,0,30,242
+model_method,qwen3_4b,dense,Dense CLS,232,177,55,232,210,22,0,0,33,232
+model_method,qwen3_4b,hybrid,Hybrid CLS,265,198,67,265,240,25,0,0,42,265
+overall,ALL,ALL,All models/methods,1829,1465,364,1829,1749,80,0,0,284,1829

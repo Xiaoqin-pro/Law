@@ -1,0 +1,4 @@
+﻿audit_unit_id,query_id,model,method,raw_citation,model_assisted_actually_resolvable,model_assisted_parser_error_type,v2_resolvable_high_confidence,v2_resolution_method,v2_parse_status,agreement_with_model_assisted_reference
+51,465,qwen25_7b,dense,第一千一百七十一条,yes,contextual_law_name_not_propagated,False,unresolved,ambiguous,False
+60,411,qwen25_7b,dense,第三十九条,yes,contextual_law_name_not_propagated,False,unresolved,ambiguous,False
+78,1433,qwen3_4b,hybrid,第六百六十三条,yes,contextual_law_name_not_propagated,False,unresolved,unresolved,False

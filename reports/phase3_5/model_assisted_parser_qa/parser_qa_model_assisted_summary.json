@@ -1,0 +1,262 @@
+{
+  "analysis_version": "phase3_5B1a_parser_qa_model_assisted_v1",
+  "status": "MODEL_ASSISTED_ONLY",
+  "total_rows": 100,
+  "completed_rows": 100,
+  "incomplete_rows": 0,
+  "manual_field_errors": [],
+  "group_counts": {
+    "resolved_citation": 40,
+    "unresolved_or_uncertain_citation": 40,
+    "no_conventional_citation_answer": 20
+  },
+  "group_metrics": {
+    "resolved_citation": {
+      "extraction_correct": {
+        "yes": 40,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 0,
+        "observed_n": 40,
+        "accuracy": 1.0
+      },
+      "law_name_correct": {
+        "yes": 40,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 0,
+        "observed_n": 40,
+        "accuracy": 1.0
+      },
+      "article_number_correct": {
+        "yes": 40,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 0,
+        "observed_n": 40,
+        "accuracy": 1.0
+      },
+      "resolution_correct": {
+        "yes": 40,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 0,
+        "observed_n": 40,
+        "accuracy": 1.0
+      },
+      "actually_resolvable": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "parser_error_type": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 40,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "notes": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 0,
+        "observed_n": 0,
+        "accuracy": null
+      }
+    },
+    "unresolved_or_uncertain_citation": {
+      "extraction_correct": {
+        "yes": 30,
+        "no": 10,
+        "uncertain": 0,
+        "blank": 0,
+        "observed_n": 40,
+        "accuracy": 0.75
+      },
+      "law_name_correct": {
+        "yes": 2,
+        "no": 38,
+        "uncertain": 0,
+        "blank": 0,
+        "observed_n": 40,
+        "accuracy": 0.05
+      },
+      "article_number_correct": {
+        "yes": 40,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 0,
+        "observed_n": 40,
+        "accuracy": 1.0
+      },
+      "resolution_correct": {
+        "yes": 2,
+        "no": 38,
+        "uncertain": 0,
+        "blank": 0,
+        "observed_n": 40,
+        "accuracy": 0.05
+      },
+      "actually_resolvable": {
+        "yes": 38,
+        "no": 1,
+        "uncertain": 1,
+        "blank": 0,
+        "observed_n": 39,
+        "accuracy": 0.9743589743589743
+      },
+      "parser_error_type": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 2,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "notes": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 0,
+        "observed_n": 0,
+        "accuracy": null
+      }
+    },
+    "no_conventional_citation_answer": {
+      "extraction_correct": {
+        "yes": 20,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 0,
+        "observed_n": 20,
+        "accuracy": 1.0
+      },
+      "law_name_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 20,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "article_number_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 20,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "resolution_correct": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 20,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "actually_resolvable": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 20,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "parser_error_type": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 20,
+        "observed_n": 0,
+        "accuracy": null
+      },
+      "notes": {
+        "yes": 0,
+        "no": 0,
+        "uncertain": 0,
+        "blank": 0,
+        "observed_n": 0,
+        "accuracy": null
+      }
+    }
+  },
+  "resolved_precision": {
+    "yes": 40,
+    "no": 0,
+    "uncertain": 0,
+    "blank": 0,
+    "observed_n": 40,
+    "accuracy": 1.0
+  },
+  "unresolved_actually_resolvable": {
+    "yes": 38,
+    "no": 1,
+    "uncertain": 1,
+    "blank": 0,
+    "observed_n": 39,
+    "accuracy": 0.9743589743589743
+  },
+  "no_citation_false_negative_control": {
+    "yes": 20,
+    "no": 0,
+    "uncertain": 0,
+    "blank": 0,
+    "observed_n": 20,
+    "accuracy": 1.0
+  },
+  "error_reason_counts": {
+    "法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。": 28,
+    "原文有可识别的法名+条号，但抽取边界丢失前缀/书名号或夹入多余书名号。": 6,
+    "长司法解释标题从内层书名号处被截断；原文可唯一还原完整规范名称。": 2,
+    "模型 citation 书名号位置不规范，但法名+条号仍可唯一识别；parser 未鲁棒归一化。": 2
+  },
+  "parser_error_type_counts": {
+    "contextual_law_name_not_propagated": 28,
+    "citation_boundary_bracket_error": 6,
+    "long_title_bracket_alias_error": 2,
+    "malformed_model_citation_normalization_failure": 2
+  },
+  "systematic_failure_flags": [
+    {
+      "parser_error_type": "contextual_law_name_not_propagated",
+      "count": 28
+    },
+    {
+      "parser_error_type": "citation_boundary_bracket_error",
+      "count": 6
+    }
+  ],
+  "acceptance_rule": "PASS iff all manual fields are complete, resolved precision >= 0.95, and no repeated parser_error_type flag is present.",
+  "note": "This report does not fill or infer human fields. Unresolved/uncertain rows require manual actually_resolvable judgments.",
+  "label_source": "ChatGPT model-assisted review",
+  "human_validation_required": true,
+  "human_acceptance_preview": "FAIL_SYSTEMATIC_FAILURES",
+  "structural_valid": true,
+  "input_file": "E:\\xiazai\\google\\parser_qa_model_assisted_filled.xlsx",
+  "input_sha256": "ebd33ba4eb29882206e3c8663477b8ac2cca2398c0a82be54c83e340ca2eadc0",
+  "sheet_name": "parser_qa_annotations",
+  "reference_sample": "D:\\111\\Desktop\\Law\\reports\\phase3_5\\parser_qa_data.json",
+  "overlay_integrity": {
+    "sheet_rows_total": 105,
+    "numeric_annotation_rows": 100,
+    "non_sample_or_blank_rows": 5,
+    "annotation_id_min": 1,
+    "annotation_id_max": 100,
+    "unique_annotation_ids": 100,
+    "duplicate_ids": [],
+    "missing_expected_ids": [],
+    "unexpected_ids": [],
+    "sample_id_set_exact": true,
+    "review_source_counts": {
+      "ChatGPT model-assisted review": 100
+    },
+    "notes_contain_model_assisted_disclaimer": 100
+  },
+  "next_gate": "Independent human validation of Parser QA before formal B-1 acceptance."
+}

@@ -1,0 +1,18 @@
+{
+  "audit_version": "parser_v2_independent_deterministic_audit_v1",
+  "method": "independent corpus key reconstruction, raw article-number check, and context antecedent check; parser extraction was not called",
+  "corpus_statute_count": 55348,
+  "checked_high_confidence_resolutions": 1749,
+  "checked_non_high_confidence_resolutions": 0,
+  "method_counts": {
+    "unresolved": 80,
+    "exact": 1120,
+    "boundary_repair": 249,
+    "context_propagation": 198,
+    "malformed_citation_repair": 131,
+    "long_title_normalization": 51
+  },
+  "high_confidence_conflict_count": 0,
+  "high_confidence_conflicts": [],
+  "status": "PASS"
+}

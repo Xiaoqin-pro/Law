@@ -1,0 +1,41 @@
+﻿priority,audit_unit_id,query_id,model,method,raw_citation,parser_status,model_assisted_extraction_correct,model_assisted_law_name_correct,model_assisted_article_number_correct,model_assisted_resolution_correct,model_assisted_actually_resolvable,model_assisted_parser_error_type,model_assisted_short_reason,human_validation_required
+high,41,1307,qwen25_7b,dense,第五百一十条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,42,1338,qwen3_4b,direct,行政许可法》第十二条,unresolved,no,no,yes,no,yes,citation_boundary_bracket_error,原文有可识别的法名+条号，但抽取边界丢失前缀/书名号或夹入多余书名号。,yes
+high,43,1286,qwen3_4b,direct,第七百四十三条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,44,317,qwen3_4b,hybrid,保险法〉若干问题的解释(二)》第二条,unresolved,no,no,yes,no,yes,long_title_bracket_alias_error,长司法解释标题从内层书名号处被截断；原文可唯一还原完整规范名称。,yes
+high,45,695,qwen3_4b,direct,第793条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,46,711,qwen25_7b,bm25,民事诉讼法》第36条,unresolved,no,no,yes,no,yes,citation_boundary_bracket_error,原文有可识别的法名+条号，但抽取边界丢失前缀/书名号或夹入多余书名号。,yes
+high,47,1338,qwen3_4b,bm25,第七十一条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,48,939,qwen3_4b,dense,第一千零七十四条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,49,463,qwen25_7b,hybrid,第十六条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,50,1476,qwen3_4b,direct,第九百二十条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,51,465,qwen25_7b,dense,第一千一百七十一条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,52,1169,qwen3_4b,dense,民法典〉继承编的解释(一)》第十条,unresolved,no,no,yes,no,yes,long_title_bracket_alias_error,长司法解释标题从内层书名号处被截断；原文可唯一还原完整规范名称。,yes
+high,53,848,qwen3_4b,direct,第1199条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,54,465,qwen3_4b,hybrid,第一千一百七十一条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,55,412,qwen3_4b,hybrid,《劳动合同法第十四条,unresolved,no,no,yes,no,yes,malformed_model_citation_normalization_failure,模型 citation 书名号位置不规范，但法名+条号仍可唯一识别；parser 未鲁棒归一化。,yes
+high,56,1342,qwen3_4b,direct,行政许可法》第三十二条,unresolved,no,no,yes,no,yes,citation_boundary_bracket_error,原文有可识别的法名+条号，但抽取边界丢失前缀/书名号或夹入多余书名号。,yes
+medium,57,1534,qwen3_4b,dense,第一千二百四十条,unresolved,yes,yes,yes,yes,uncertain,,原文只有裸条号且未明确法名；可能凭法律背景推断，但仅凭文本不宜强制解析。,yes
+high,58,251,qwen3_4b,direct,第761条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,59,1476,qwen3_4b,hybrid,第八百三十九条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,60,411,qwen25_7b,dense,第三十九条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,61,786,qwen25_7b,bm25,《政府信息公开条例第二十九条,unresolved,no,no,yes,no,yes,malformed_model_citation_normalization_failure,模型 citation 书名号位置不规范，但法名+条号仍可唯一识别；parser 未鲁棒归一化。,yes
+high,62,818,qwen3_4b,hybrid,第二十八条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,63,398,qwen3_4b,direct,劳动合同法》第十七条,unresolved,no,no,yes,no,yes,citation_boundary_bracket_error,原文有可识别的法名+条号，但抽取边界丢失前缀/书名号或夹入多余书名号。,yes
+high,64,839,qwen3_4b,direct,第五百六十五条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,65,410,qwen3_4b,direct,劳动合同法》第四十二条,unresolved,no,no,yes,no,yes,citation_boundary_bracket_error,原文有可识别的法名+条号，但抽取边界丢失前缀/书名号或夹入多余书名号。,yes
+high,66,1461,qwen25_7b,dense,第二十七条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,67,1502,qwen3_4b,direct,第1165条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,68,770,qwen3_4b,direct,第四百四十一条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,69,1283,qwen3_4b,bm25,第七百五十四条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,70,566,qwen3_4b,hybrid,第五百七十九条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,71,1342,qwen3_4b,direct,第三十三条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,72,54,qwen3_4b,direct,民事诉讼法》第六十四条,unresolved,no,no,yes,no,yes,citation_boundary_bracket_error,原文有可识别的法名+条号，但抽取边界丢失前缀/书名号或夹入多余书名号。,yes
+high,73,1374,qwen3_4b,direct,第九百六十一条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,74,1309,qwen3_4b,direct,第七百一十六条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,75,297,qwen3_4b,direct,第552条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,76,839,qwen3_4b,hybrid,第六十五条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,77,722,qwen3_4b,direct,第五百五十二条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,78,1433,qwen3_4b,hybrid,第六百六十三条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+high,79,916,qwen3_4b,hybrid,第78条,unresolved,yes,no,yes,no,yes,contextual_law_name_not_propagated,法名在同句或前文已明确，裸条号可唯一回指；parser 未传播上下文法名。,yes
+medium,80,799,qwen3_4b,hybrid,第十条,unresolved,yes,yes,yes,yes,no,,全文只有裸条号且没有可唯一回指的规范名称；保持 unresolved 合理。,yes
