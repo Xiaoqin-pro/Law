@@ -17,6 +17,7 @@ Key outputs:
 - `sampling_manifest.json`: source stratum, population/sample sizes, selection probabilities, and sampling weights. The sample is diagnostic and unweighted proportions are not 309-query population prevalence.
 - `parser_qa.xlsx` / `parser_qa_data.json`: fixed-seed 100-unit parser QA sample (40 resolved citations, 40 unresolved/ambiguous/malformed citations, and 20 no-citation answers), with blank manual fields.
 - `parser_qa_summary.json` / `parser_qa_summary_zh.md`: parser validation status; currently `WAITING_FOR_HUMAN_ANNOTATION` because the 100 manual rows are blank.
+- `model_assisted_parser_qa/`: a separately evaluated ChatGPT model-assisted overlay. It is useful for prioritizing human review, but its status remains `MODEL_ASSISTED_ONLY`; it must not be reported as human Parser QA.
 - `parser_qa_independent_precheck.json` / `.md`: standalone raw-text precheck for reviewer convenience only; it is explicitly not Parser QA acceptance or human annotation.
 - `manual_annotation_progress.json`: immutable-field and annotation-schema validation for the 120 Dense rows; currently `WAITING_FOR_HUMAN_ANNOTATION`.
 - `phase3_5B1_checkpoint_report.md`: B-1 order, acceptance rule, and stop condition.
