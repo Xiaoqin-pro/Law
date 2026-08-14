@@ -4,6 +4,7 @@ venv/
 __pycache__/
 .pytest_cache/
 *.py[cod]
+node_modules/
 
 # Downloaded/generated dataset files. Recreate them with the scripts in this repo.
 data/raw/LeCoQA/

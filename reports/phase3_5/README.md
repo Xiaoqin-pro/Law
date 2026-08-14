@@ -1,4 +1,4 @@
-# Phase 3.5A / Phase 3.5B-0 automatic citation analysis
+# Phase 3.5A / Phase 3.5B-1 validation workspace
 
 This directory contains the automatic evaluation produced from frozen release commit `b3679ade8b233b71e5d3812dd44184aabee05f8f`.
 
@@ -16,8 +16,12 @@ Key outputs:
 - `manual_audit.xlsx`: a stratified diagnostic sample of 60 unique query IDs; `primary_answers` contains only 120 Dense rows (2 models × 60 queries), while Direct/BM25/Hybrid remain comparison context.
 - `sampling_manifest.json`: source stratum, population/sample sizes, selection probabilities, and sampling weights. The sample is diagnostic and unweighted proportions are not 309-query population prevalence.
 - `parser_qa.xlsx` / `parser_qa_data.json`: fixed-seed 100-unit parser QA sample (40 resolved citations, 40 unresolved/ambiguous/malformed citations, and 20 no-citation answers), with blank manual fields.
+- `parser_qa_summary.json` / `parser_qa_summary_zh.md`: parser validation status; currently `WAITING_FOR_HUMAN_ANNOTATION` because the 100 manual rows are blank.
+- `parser_qa_independent_precheck.json` / `.md`: standalone raw-text precheck for reviewer convenience only; it is explicitly not Parser QA acceptance or human annotation.
+- `manual_annotation_progress.json`: immutable-field and annotation-schema validation for the 120 Dense rows; currently `WAITING_FOR_HUMAN_ANNOTATION`.
+- `phase3_5B1_checkpoint_report.md`: B-1 order, acceptance rule, and stop condition.
 - `annotation_guideline.md`: semantic-review labels and boundaries.
 
 The `[法条ID n]` strings that some RAG answers copied from the prompt are recorded separately as `evidence_marker_ids`; they are not counted as conventional law/article citations. This prevents internal prompt markers from inflating citation-presence and citation-quality metrics.
 
-The project is intentionally stopped at Phase 3.5B-0. Parser QA and the Dense-only first-round semantic workbook are prepared, but no semantic labels have been filled. Do not enter Phase 3.5B-1 or Phase 4 until the parser QA and first-round review are complete.
+Phase 3.5B-1 infrastructure is prepared, but both workbooks are still waiting for human annotation. Do not report Parser QA as passed, calculate semantic failure prevalence, merge the PR, or enter Phase 4 until the required human fields are completed and revalidated.
