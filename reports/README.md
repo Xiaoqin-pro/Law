@@ -7,8 +7,15 @@ This directory records the validation work completed before any Phase 3.5 citati
 - Dense retrieval now uses the normalized BGE-M3 CLS representation. The previous mean-pooling implementation remains available only through the explicitly named legacy configuration.
 - Retrieval metrics report both Hit@K and gold-statute Recall@K; they are no longer treated as the same measure.
 - Dense and Hybrid retrieval were rerun on the 309-query LeCoQA test split.
-- Generation was rerun only for the corrected Dense and Hybrid inputs with Qwen3-4B and Qwen2.5-7B.
+- Generation was rerun for the corrected Dense and Hybrid inputs and the Phase 3.2 BM25 context-safe inputs with Qwen3-4B and Qwen2.5-7B.
 - Prompt audits record token counts, truncation, and fully/partially visible statute blocks.
+
+## Phase 3.2 final baseline freeze
+
+- Gold reconciliation is non-positional and formatting-only: all 309 queries have deterministic resolved sets; 267 are raw-clean, 42 are order-only conflicts, and 0 are unresolved or true-set-conflicted. Strict Level A/B high-confidence coverage is 11 queries; Level C matches are reported separately.
+- BM25 v2 contains 618/618 successful records across both models, with 0 truncation and 0 partially visible statute blocks.
+- Dense CLS is the primary retriever candidate on the raw and raw-clean views; Hybrid remains the comparison baseline.
+- Phase 3.5 citation analysis and Phase 4 repair/training remain deferred.
 
 ## Acceptance results
 
@@ -19,9 +26,9 @@ This directory records the validation work completed before any Phase 3.5 citati
 | Corrected generation status | 1,236/1,236 `ok` |
 | Corrected generation truncation | 0 |
 | Corrected generation partial statute blocks | 0 |
-| Unit tests | 15/15 passed |
+| Unit tests | 19/19 passed |
 
-The LeCoQA gold audit classified 267 test records as clean and 42 as `id_evidence_conflict`. These records are retained and reported; they are not silently discarded.
+The non-positional LeCoQA gold reconciliation classified 267 test records as raw-clean and 42 as order-only conflicts. All records are retained and reported; no record is silently discarded or promoted from Level C to strict high-confidence gold.
 
 The legacy generation context audit found 4 truncated BM25 records and no truncation in the legacy Dense or Hybrid records. The corrected rerun has no truncation in either Dense or Hybrid method.
 
@@ -38,6 +45,10 @@ The legacy generation context audit found 4 truncated BM25 records and no trunca
 - `phase3_1_summary.json`: corrected generation summary and artifact hashes.
 - `data/lecoqa_gold_audit.json`: full gold-alignment audit.
 - `generation/context_audit.json`: audit of the earlier generation outputs.
+- `final_baseline_manifest.json`: hashes, metrics, generation summaries, and final acceptance status.
+- `final_baseline_report.md`: human-readable Phase 3.2 freeze report.
+- `data/lecoqa_gold_reconciliation.json`: non-positional reconciliation output.
+- `phase3_2/retrieval_final.csv`: raw, raw-clean, and high-confidence retrieval metrics.
 
 The large model outputs, embedding cache, and FAISS index remain local and ignored by Git. Their metadata and hashes are recorded in the experiment reports.
 

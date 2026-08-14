@@ -1,0 +1,541 @@
+{
+  "manifest_version": "phase3_2_v1_final_baseline_freeze",
+  "dataset": "LeCoQA",
+  "split": "test",
+  "query_count": 309,
+  "git_commit_at_manifest_generation": "5d32aef0c642772482749e456939eb65e3b2b031",
+  "platform": "Windows-11-10.0.22631-SP0",
+  "phase_status": {
+    "phase3_2": "complete_pending_commit",
+    "phase3_5": "deferred",
+    "phase4": "deferred"
+  },
+  "gold_reconciliation": {
+    "file": "reports\\data\\lecoqa_gold_reconciliation.json",
+    "sha256": "5048e8434ad7882488f488ce355fef7e4cd646fe4098816e3676e36cf93fa807",
+    "counts": {
+      "reconciliation_status": {
+        "clean": 267,
+        "order_only_conflict": 42
+      },
+      "resolution_level": {
+        "A_exact_name_and_text": 18,
+        "C_exact_name_unique": 530
+      },
+      "raw_position_clean": 267,
+      "all_related_resolved": 309,
+      "high_confidence_all_related": 11,
+      "high_confidence_agreement": 11,
+      "not_strict_high_confidence": 298,
+      "actual_unresolved_or_conflicted": 0
+    },
+    "resolution_levels": {
+      "A_exact_name_and_text": "high_confidence",
+      "B_exact_text_unique": "high_confidence",
+      "C_exact_name_unique": "reported_separately_not_high_confidence",
+      "D_ambiguous": "not_resolved",
+      "D_unresolved": "not_resolved"
+    }
+  },
+  "retrieval": {
+    "file": "reports\\phase3_2\\retrieval_final.csv",
+    "sha256": "fa75cee97eb0eb524e087c65532d851e1f843d03ca7b8fbf6e1acf972fd6c072",
+    "metrics": [
+      {
+        "gold_definition": "raw_all",
+        "retriever": "bm25",
+        "query_count": "309",
+        "hit_at_1": "0.313916",
+        "hit_at_5": "0.521036",
+        "hit_at_10": "0.576052",
+        "recall_at_1": "0.235167",
+        "recall_at_5": "0.416052",
+        "recall_at_10": "0.472342",
+        "mrr": "0.398776"
+      },
+      {
+        "gold_definition": "raw_all",
+        "retriever": "dense_cls",
+        "query_count": "309",
+        "hit_at_1": "0.414239",
+        "hit_at_5": "0.650485",
+        "hit_at_10": "0.71521",
+        "recall_at_1": "0.317907",
+        "recall_at_5": "0.533279",
+        "recall_at_10": "0.596074",
+        "mrr": "0.512704"
+      },
+      {
+        "gold_definition": "raw_all",
+        "retriever": "hybrid_cls",
+        "query_count": "309",
+        "hit_at_1": "0.375405",
+        "hit_at_5": "0.63754",
+        "hit_at_10": "0.705502",
+        "recall_at_1": "0.285578",
+        "recall_at_5": "0.511036",
+        "recall_at_10": "0.584499",
+        "mrr": "0.48261"
+      },
+      {
+        "gold_definition": "raw_clean",
+        "retriever": "bm25",
+        "query_count": "267",
+        "hit_at_1": "0.314607",
+        "hit_at_5": "0.520599",
+        "hit_at_10": "0.580524",
+        "recall_at_1": "0.252185",
+        "recall_at_5": "0.433021",
+        "recall_at_10": "0.491823",
+        "mrr": "0.399551"
+      },
+      {
+        "gold_definition": "raw_clean",
+        "retriever": "dense_cls",
+        "query_count": "267",
+        "hit_at_1": "0.423221",
+        "hit_at_5": "0.64794",
+        "hit_at_10": "0.719101",
+        "recall_at_1": "0.34407",
+        "recall_at_5": "0.557678",
+        "recall_at_10": "0.624719",
+        "mrr": "0.515915"
+      },
+      {
+        "gold_definition": "raw_clean",
+        "retriever": "hybrid_cls",
+        "query_count": "267",
+        "hit_at_1": "0.382022",
+        "hit_at_5": "0.636704",
+        "hit_at_10": "0.700375",
+        "recall_at_1": "0.309613",
+        "recall_at_5": "0.538639",
+        "recall_at_10": "0.608989",
+        "mrr": "0.484521"
+      },
+      {
+        "gold_definition": "high_confidence_reconciled",
+        "retriever": "bm25",
+        "query_count": "11",
+        "hit_at_1": "0.181818",
+        "hit_at_5": "0.181818",
+        "hit_at_10": "0.272727",
+        "recall_at_1": "0.136364",
+        "recall_at_5": "0.136364",
+        "recall_at_10": "0.227273",
+        "mrr": "0.190909"
+      },
+      {
+        "gold_definition": "high_confidence_reconciled",
+        "retriever": "dense_cls",
+        "query_count": "11",
+        "hit_at_1": "0.090909",
+        "hit_at_5": "0.181818",
+        "hit_at_10": "0.272727",
+        "recall_at_1": "0.045455",
+        "recall_at_5": "0.136364",
+        "recall_at_10": "0.227273",
+        "mrr": "0.145455"
+      },
+      {
+        "gold_definition": "high_confidence_reconciled",
+        "retriever": "hybrid_cls",
+        "query_count": "11",
+        "hit_at_1": "0.0",
+        "hit_at_5": "0.363636",
+        "hit_at_10": "0.545455",
+        "recall_at_1": "0.0",
+        "recall_at_5": "0.272727",
+        "recall_at_10": "0.409091",
+        "mrr": "0.142424"
+      },
+      {
+        "gold_definition": "resolved_agreement",
+        "retriever": "bm25",
+        "query_count": "309",
+        "hit_at_1": "0.313916",
+        "hit_at_5": "0.521036",
+        "hit_at_10": "0.576052",
+        "recall_at_1": "0.235167",
+        "recall_at_5": "0.416052",
+        "recall_at_10": "0.472342",
+        "mrr": "0.398776"
+      },
+      {
+        "gold_definition": "resolved_agreement",
+        "retriever": "dense_cls",
+        "query_count": "309",
+        "hit_at_1": "0.414239",
+        "hit_at_5": "0.650485",
+        "hit_at_10": "0.71521",
+        "recall_at_1": "0.317907",
+        "recall_at_5": "0.533279",
+        "recall_at_10": "0.596074",
+        "mrr": "0.512704"
+      },
+      {
+        "gold_definition": "resolved_agreement",
+        "retriever": "hybrid_cls",
+        "query_count": "309",
+        "hit_at_1": "0.375405",
+        "hit_at_5": "0.63754",
+        "hit_at_10": "0.705502",
+        "recall_at_1": "0.285578",
+        "recall_at_5": "0.511036",
+        "recall_at_10": "0.584499",
+        "mrr": "0.48261"
+      }
+    ],
+    "paired_bootstrap_file": "reports/phase3_2/retrieval_paired_bootstrap.csv",
+    "paired_bootstrap_sha256": "71fc4543ddf22ac23d6ee02e82bdaf9cdcd7a26961b930cb8e46e40f998fe1ff",
+    "primary_retriever_candidate": "dense_cls",
+    "primary_retriever_reason": "Dense CLS is numerically ahead of Hybrid on the raw and raw-clean 309/267-query evaluations; no significance claim is made here."
+  },
+  "generation": [
+    {
+      "key": "qwen25_7b_direct",
+      "file": "outputs\\generation\\phase3_full_qwen25_7b_direct.jsonl",
+      "metadata_file": "outputs\\generation\\phase3_full_qwen25_7b_direct.metadata.json",
+      "record_count": 309,
+      "unique_query_count": 309,
+      "status_counts": {
+        "ok": 309
+      },
+      "all_ok": true,
+      "truncated_count": 0,
+      "partial_statute_block_count": 0,
+      "fully_visible_statute_block_count": 0,
+      "input_token_count_mean": null,
+      "input_token_count_max": null,
+      "artifact_sha256": "4085140a7b522007ad655775e320275e543d6343614484724f2d8753a611a751",
+      "metadata_sha256": "0a228928ef83e24742d8ff9188609077f50885a4a83fdfbc4e7de40a3b902dcc",
+      "model_key": "qwen25_7b",
+      "model_name": "D:\\111\\Desktop\\Law\\outputs\\generation\\models\\Qwen2.5-7B-Instruct",
+      "model_revision": "unknown",
+      "prompt_version": "phase3_v1",
+      "generation_config": {
+        "max_new_tokens": 384,
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "max_input_tokens": 4096,
+        "quantization": "4bit"
+      },
+      "retrieval_experiment_id": null
+    },
+    {
+      "key": "qwen25_7b_bm25_v2",
+      "file": "outputs\\generation\\phase3_2_bm25_contextsafe_full_qwen25_7b_bm25.jsonl",
+      "metadata_file": "outputs\\generation\\phase3_2_bm25_contextsafe_full_qwen25_7b_bm25.metadata.json",
+      "record_count": 309,
+      "unique_query_count": 309,
+      "status_counts": {
+        "ok": 309
+      },
+      "all_ok": true,
+      "truncated_count": 0,
+      "partial_statute_block_count": 0,
+      "fully_visible_statute_block_count": 0,
+      "input_token_count_mean": 1336.159,
+      "input_token_count_max": 4065,
+      "artifact_sha256": "71a7c4f03b24fd3a7bd093ebfa1278d38fdaa2ef7090e6ab46124bc5489be3b6",
+      "metadata_sha256": "4639707edee07ff9a575865f3c8118413dbc98a5628400aab503fc0bf8742aa6",
+      "model_key": "qwen25_7b",
+      "model_name": "D:\\111\\Desktop\\Law\\outputs\\generation\\models\\Qwen2.5-7B-Instruct",
+      "model_revision": "unknown",
+      "prompt_version": "phase3_1_v2_context_audited",
+      "generation_config": {
+        "max_new_tokens": 384,
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "max_input_tokens": 4096,
+        "quantization": "4bit"
+      },
+      "retrieval_experiment_id": "phase2_full_20260813_010257"
+    },
+    {
+      "key": "qwen25_7b_dense_cls",
+      "file": "outputs\\generation\\phase3_1_cls_v2_full_qwen25_7b_dense.jsonl",
+      "metadata_file": "outputs\\generation\\phase3_1_cls_v2_full_qwen25_7b_dense.metadata.json",
+      "record_count": 309,
+      "unique_query_count": 309,
+      "status_counts": {
+        "ok": 309
+      },
+      "all_ok": true,
+      "truncated_count": 0,
+      "partial_statute_block_count": 0,
+      "fully_visible_statute_block_count": 3090,
+      "input_token_count_mean": 1040.388,
+      "input_token_count_max": 1809,
+      "artifact_sha256": "3dc4b62f646708983622881e15247df3654adfe7ee1b9cb2d475e1e9732badeb",
+      "metadata_sha256": "4865ec6ab2197fd1cc82ce81f7c9843bed9adb436650aa9c33827ad5749009f2",
+      "model_key": "qwen25_7b",
+      "model_name": "D:\\111\\Desktop\\Law\\outputs\\generation\\models\\Qwen2.5-7B-Instruct",
+      "model_revision": "unknown",
+      "prompt_version": "phase3_1_v2_context_audited",
+      "generation_config": {
+        "max_new_tokens": 384,
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "max_input_tokens": 4096,
+        "quantization": "4bit"
+      },
+      "retrieval_experiment_id": "phase2_1_cls_v2_full"
+    },
+    {
+      "key": "qwen25_7b_hybrid_cls",
+      "file": "outputs\\generation\\phase3_1_cls_v2_full_qwen25_7b_hybrid.jsonl",
+      "metadata_file": "outputs\\generation\\phase3_1_cls_v2_full_qwen25_7b_hybrid.metadata.json",
+      "record_count": 309,
+      "unique_query_count": 309,
+      "status_counts": {
+        "ok": 309
+      },
+      "all_ok": true,
+      "truncated_count": 0,
+      "partial_statute_block_count": 0,
+      "fully_visible_statute_block_count": 3090,
+      "input_token_count_mean": 1177.709,
+      "input_token_count_max": 3015,
+      "artifact_sha256": "10ccbd6c40ef97a74e2370bff950d3158f538b4f8ec13c23b35a153d6efb709c",
+      "metadata_sha256": "9ace1056798c8d61582bea8e822a1bb97b60b583eab77428a625fd2948b7d782",
+      "model_key": "qwen25_7b",
+      "model_name": "D:\\111\\Desktop\\Law\\outputs\\generation\\models\\Qwen2.5-7B-Instruct",
+      "model_revision": "unknown",
+      "prompt_version": "phase3_1_v2_context_audited",
+      "generation_config": {
+        "max_new_tokens": 384,
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "max_input_tokens": 4096,
+        "quantization": "4bit"
+      },
+      "retrieval_experiment_id": "phase2_1_cls_v2_full"
+    },
+    {
+      "key": "qwen3_4b_direct",
+      "file": "outputs\\generation\\phase3_full_qwen3_4b_direct.jsonl",
+      "metadata_file": "outputs\\generation\\phase3_full_qwen3_4b_direct.metadata.json",
+      "record_count": 309,
+      "unique_query_count": 309,
+      "status_counts": {
+        "ok": 309
+      },
+      "all_ok": true,
+      "truncated_count": 0,
+      "partial_statute_block_count": 0,
+      "fully_visible_statute_block_count": 0,
+      "input_token_count_mean": null,
+      "input_token_count_max": null,
+      "artifact_sha256": "aad008d5839835f149f3a8c4f027ae709609be5a791f086c2d749963a4df10ac",
+      "metadata_sha256": "91ca07e24426b09ccaa363e98791cfc5354bc43aa73abb8d8f63bae9df5efc65",
+      "model_key": "qwen3_4b",
+      "model_name": "D:\\111\\Desktop\\Law\\outputs\\generation\\models\\Qwen3-4B-Instruct-2507",
+      "model_revision": "unknown",
+      "prompt_version": "phase3_v1",
+      "generation_config": {
+        "max_new_tokens": 384,
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "max_input_tokens": 4096,
+        "quantization": "4bit"
+      },
+      "retrieval_experiment_id": null
+    },
+    {
+      "key": "qwen3_4b_bm25_v2",
+      "file": "outputs\\generation\\phase3_2_bm25_contextsafe_full_qwen3_4b_bm25.jsonl",
+      "metadata_file": "outputs\\generation\\phase3_2_bm25_contextsafe_full_qwen3_4b_bm25.metadata.json",
+      "record_count": 309,
+      "unique_query_count": 309,
+      "status_counts": {
+        "ok": 309
+      },
+      "all_ok": true,
+      "truncated_count": 0,
+      "partial_statute_block_count": 0,
+      "fully_visible_statute_block_count": 0,
+      "input_token_count_mean": 1315.159,
+      "input_token_count_max": 4044,
+      "artifact_sha256": "7635728df56b70fc73cad825f52ec31c8683ec1a1fddc684fc7c1491e6e537a7",
+      "metadata_sha256": "36feff081dd9b3fffbbc7aff46467847cee6253c980ed738b1f56b945682f823",
+      "model_key": "qwen3_4b",
+      "model_name": "D:\\111\\Desktop\\Law\\outputs\\generation\\models\\Qwen3-4B-Instruct-2507",
+      "model_revision": "unknown",
+      "prompt_version": "phase3_1_v2_context_audited",
+      "generation_config": {
+        "max_new_tokens": 384,
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "max_input_tokens": 4096,
+        "quantization": "4bit"
+      },
+      "retrieval_experiment_id": "phase2_full_20260813_010257"
+    },
+    {
+      "key": "qwen3_4b_dense_cls",
+      "file": "outputs\\generation\\phase3_1_cls_v2_full_qwen3_4b_dense.jsonl",
+      "metadata_file": "outputs\\generation\\phase3_1_cls_v2_full_qwen3_4b_dense.metadata.json",
+      "record_count": 309,
+      "unique_query_count": 309,
+      "status_counts": {
+        "ok": 309
+      },
+      "all_ok": true,
+      "truncated_count": 0,
+      "partial_statute_block_count": 0,
+      "fully_visible_statute_block_count": 3090,
+      "input_token_count_mean": 1019.388,
+      "input_token_count_max": 1788,
+      "artifact_sha256": "4e8cef8b562eef29f06e0868c3399122ca3011ff59dce629e1c1e557ca1c1bcc",
+      "metadata_sha256": "b481618bf0c5df1792ec1ea456ab9a42222bd878cfb1f885d220e566664402f4",
+      "model_key": "qwen3_4b",
+      "model_name": "D:\\111\\Desktop\\Law\\outputs\\generation\\models\\Qwen3-4B-Instruct-2507",
+      "model_revision": "unknown",
+      "prompt_version": "phase3_1_v2_context_audited",
+      "generation_config": {
+        "max_new_tokens": 384,
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "max_input_tokens": 4096,
+        "quantization": "4bit"
+      },
+      "retrieval_experiment_id": "phase2_1_cls_v2_full"
+    },
+    {
+      "key": "qwen3_4b_hybrid_cls",
+      "file": "outputs\\generation\\phase3_1_cls_v2_full_qwen3_4b_hybrid.jsonl",
+      "metadata_file": "outputs\\generation\\phase3_1_cls_v2_full_qwen3_4b_hybrid.metadata.json",
+      "record_count": 309,
+      "unique_query_count": 309,
+      "status_counts": {
+        "ok": 309
+      },
+      "all_ok": true,
+      "truncated_count": 0,
+      "partial_statute_block_count": 0,
+      "fully_visible_statute_block_count": 3090,
+      "input_token_count_mean": 1156.709,
+      "input_token_count_max": 2994,
+      "artifact_sha256": "8300e2a88c8f7268f8f9aee700aeddecbdd7738bce6ba7be4195d7123d8b5e3b",
+      "metadata_sha256": "1802f345e3e40bef874742556db802001187757799b4606d652c4731594fdb81",
+      "model_key": "qwen3_4b",
+      "model_name": "D:\\111\\Desktop\\Law\\outputs\\generation\\models\\Qwen3-4B-Instruct-2507",
+      "model_revision": "unknown",
+      "prompt_version": "phase3_1_v2_context_audited",
+      "generation_config": {
+        "max_new_tokens": 384,
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "max_input_tokens": 4096,
+        "quantization": "4bit"
+      },
+      "retrieval_experiment_id": "phase2_1_cls_v2_full"
+    }
+  ],
+  "context_audit": {
+    "legacy_generation": {
+      "bm25": {
+        "record_count": 618,
+        "truncated_count": 4,
+        "partial_statute_blocks": 4,
+        "full_statute_blocks": 6175
+      },
+      "dense": {
+        "record_count": 618,
+        "truncated_count": 0,
+        "partial_statute_blocks": 0,
+        "full_statute_blocks": 6180
+      },
+      "hybrid": {
+        "record_count": 618,
+        "truncated_count": 0,
+        "partial_statute_blocks": 0,
+        "full_statute_blocks": 6180
+      }
+    },
+    "bm25_v2": [
+      {
+        "key": "qwen25_7b_bm25_v2",
+        "file": "outputs\\generation\\phase3_2_bm25_contextsafe_full_qwen25_7b_bm25.jsonl",
+        "metadata_file": "outputs\\generation\\phase3_2_bm25_contextsafe_full_qwen25_7b_bm25.metadata.json",
+        "record_count": 309,
+        "unique_query_count": 309,
+        "status_counts": {
+          "ok": 309
+        },
+        "all_ok": true,
+        "truncated_count": 0,
+        "partial_statute_block_count": 0,
+        "fully_visible_statute_block_count": 0,
+        "input_token_count_mean": 1336.159,
+        "input_token_count_max": 4065,
+        "artifact_sha256": "71a7c4f03b24fd3a7bd093ebfa1278d38fdaa2ef7090e6ab46124bc5489be3b6",
+        "metadata_sha256": "4639707edee07ff9a575865f3c8118413dbc98a5628400aab503fc0bf8742aa6",
+        "model_key": "qwen25_7b",
+        "model_name": "D:\\111\\Desktop\\Law\\outputs\\generation\\models\\Qwen2.5-7B-Instruct",
+        "model_revision": "unknown",
+        "prompt_version": "phase3_1_v2_context_audited",
+        "generation_config": {
+          "max_new_tokens": 384,
+          "temperature": 0.0,
+          "top_p": 1.0,
+          "max_input_tokens": 4096,
+          "quantization": "4bit"
+        },
+        "retrieval_experiment_id": "phase2_full_20260813_010257"
+      },
+      {
+        "key": "qwen3_4b_bm25_v2",
+        "file": "outputs\\generation\\phase3_2_bm25_contextsafe_full_qwen3_4b_bm25.jsonl",
+        "metadata_file": "outputs\\generation\\phase3_2_bm25_contextsafe_full_qwen3_4b_bm25.metadata.json",
+        "record_count": 309,
+        "unique_query_count": 309,
+        "status_counts": {
+          "ok": 309
+        },
+        "all_ok": true,
+        "truncated_count": 0,
+        "partial_statute_block_count": 0,
+        "fully_visible_statute_block_count": 0,
+        "input_token_count_mean": 1315.159,
+        "input_token_count_max": 4044,
+        "artifact_sha256": "7635728df56b70fc73cad825f52ec31c8683ec1a1fddc684fc7c1491e6e537a7",
+        "metadata_sha256": "36feff081dd9b3fffbbc7aff46467847cee6253c980ed738b1f56b945682f823",
+        "model_key": "qwen3_4b",
+        "model_name": "D:\\111\\Desktop\\Law\\outputs\\generation\\models\\Qwen3-4B-Instruct-2507",
+        "model_revision": "unknown",
+        "prompt_version": "phase3_1_v2_context_audited",
+        "generation_config": {
+          "max_new_tokens": 384,
+          "temperature": 0.0,
+          "top_p": 1.0,
+          "max_input_tokens": 4096,
+          "quantization": "4bit"
+        },
+        "retrieval_experiment_id": "phase2_full_20260813_010257"
+      }
+    ]
+  },
+  "tests": {
+    "command": "E:\\python\\python.exe -m unittest discover -s tests -v",
+    "status": "19/19 passed"
+  },
+  "artifact_sha256": {
+    "gold_reconciliation": "5048e8434ad7882488f488ce355fef7e4cd646fe4098816e3676e36cf93fa807",
+    "retrieval_final": "fa75cee97eb0eb524e087c65532d851e1f843d03ca7b8fbf6e1acf972fd6c072",
+    "qwen25_7b_direct": "4085140a7b522007ad655775e320275e543d6343614484724f2d8753a611a751",
+    "qwen25_7b_bm25_v2": "71a7c4f03b24fd3a7bd093ebfa1278d38fdaa2ef7090e6ab46124bc5489be3b6",
+    "qwen25_7b_dense_cls": "3dc4b62f646708983622881e15247df3654adfe7ee1b9cb2d475e1e9732badeb",
+    "qwen25_7b_hybrid_cls": "10ccbd6c40ef97a74e2370bff950d3158f538b4f8ec13c23b35a153d6efb709c",
+    "qwen3_4b_direct": "aad008d5839835f149f3a8c4f027ae709609be5a791f086c2d749963a4df10ac",
+    "qwen3_4b_bm25_v2": "7635728df56b70fc73cad825f52ec31c8683ec1a1fddc684fc7c1491e6e537a7",
+    "qwen3_4b_dense_cls": "4e8cef8b562eef29f06e0868c3399122ca3011ff59dce629e1c1e557ca1c1bcc",
+    "qwen3_4b_hybrid_cls": "8300e2a88c8f7268f8f9aee700aeddecbdd7738bce6ba7be4195d7123d8b5e3b"
+  },
+  "unresolved_or_deferred": [
+    "Level C exact-name-only matches are reported separately and are not included in strict high-confidence gold.",
+    "No semantic legal-support judgment has been made.",
+    "Phase 3.5 citation analysis and Phase 4 repair remain deferred."
+  ]
+}

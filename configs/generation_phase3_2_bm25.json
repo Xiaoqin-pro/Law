@@ -1,0 +1,13 @@
+{
+  "base_config": "configs/generation_phase3_1.json",
+  "experiment_name": "phase3_2_bm25_contextsafe",
+  "run_prefix": "phase3_2_bm25_contextsafe",
+  "retrieval_inputs": {
+    "bm25": "outputs/retrieval/phase2_full_20260813_010257.bm25.jsonl"
+  },
+  "evidence_packing": {
+    "enabled": true,
+    "version": "phase3_2_ranked_complete_blocks_v1",
+    "policy": "ranked statute blocks are added only when the complete block fits the input budget"
+  }
+}

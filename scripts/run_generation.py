@@ -20,6 +20,7 @@ from citelaw.generation import (  # noqa: E402
     LocalQwenGenerator,
     audit_prompt_context,
     build_evidence,
+    pack_evidence_to_budget,
     classify_runtime_error,
     load_generation_records,
     load_processed_queries,
@@ -37,7 +38,25 @@ def current_git_commit() -> str:
 
 
 def load_config(path: Path) -> Dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    base_config = payload.pop("base_config", None)
+    if not base_config:
+        return payload
+    base_path = Path(base_config)
+    if not base_path.is_absolute():
+        base_path = PROJECT_ROOT / base_path
+    base = load_config(base_path)
+
+    def merge(left: Dict[str, Any], right: Mapping[str, Any]) -> Dict[str, Any]:
+        result = dict(left)
+        for key, value in right.items():
+            if isinstance(result.get(key), dict) and isinstance(value, dict):
+                result[key] = merge(result[key], value)
+            else:
+                result[key] = value
+        return result
+
+    return merge(base, payload)
 
 
 def main() -> int:
@@ -120,9 +139,22 @@ def main() -> int:
                 continue
             evidence = ""
             retrieval_row = None
+            evidence_pack = None
             if method in retrieval_rows:
                 retrieval_row = retrieval_rows[method][query_id]
-                evidence = build_evidence(retrieval_row, corpus, top_k=config["top_k"])
+                if method == "bm25" and config.get("evidence_packing", {}).get("enabled", False):
+                    evidence_pack = pack_evidence_to_budget(
+                        query,
+                        retrieval_row,
+                        corpus,
+                        tokenizer=model.tokenizer,
+                        prompt_templates=config["prompt"],
+                        top_k=config["top_k"],
+                        max_input_tokens=config["max_input_tokens"],
+                    )
+                    evidence = evidence_pack["evidence"]
+                else:
+                    evidence = build_evidence(retrieval_row, corpus, top_k=config["top_k"])
             prompt = render_prompt(method, query, prompt_templates=config["prompt"], evidence=evidence)
             context_audit = audit_prompt_context(
                 model.tokenizer,
@@ -154,6 +186,10 @@ def main() -> int:
             }
             if retrieval_row is not None:
                 record["retrieved_statute_ids"] = [int(r["statute_id"]) for r in retrieval_row["results"]]
+            if evidence_pack is not None:
+                record["included_statute_ids"] = evidence_pack["included_statute_ids"]
+                record["input_token_count_before_generation"] = evidence_pack["input_token_count_before_generation"]
+                record["evidence_packing_version"] = evidence_pack["evidence_packing_version"]
             write_generation_record(output_path, record)
             if index == 1 or index % 10 == 0 or index == len(query_rows):
                 print(f"{run_id}: {index}/{len(query_rows)}")

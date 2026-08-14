@@ -43,6 +43,27 @@ def build_evidence(
     return "\n\n".join(blocks)
 
 
+def build_evidence_blocks(
+    retrieval_row: Mapping[str, Any],
+    corpus_by_id: Mapping[int, Mapping[str, Any]],
+    *,
+    top_k: int = 10,
+) -> List[Dict[str, Any]]:
+    """Return complete statute blocks in retrieval rank order."""
+
+    blocks: List[Dict[str, Any]] = []
+    for result in retrieval_row.get("results", [])[:top_k]:
+        statute_id = int(result["statute_id"])
+        statute = corpus_by_id.get(statute_id)
+        if statute is None:
+            continue
+        blocks.append({
+            "statute_id": statute_id,
+            "text": f"[娉曟潯ID {statute_id}] {statute['statute_name']}\n{statute['statute_text']}",
+        })
+    return blocks
+
+
 def render_prompt(
     method: str,
     query: Mapping[str, Any],
@@ -55,6 +76,46 @@ def render_prompt(
     if method in {"bm25", "dense", "hybrid"}:
         return prompt_templates["rag"].format(question=query["question"], evidence=evidence)
     raise ValueError(f"Unknown generation method: {method}")
+
+
+def _prompt_token_count(tokenizer: Any, prompt: str) -> int:
+    encoded_text = apply_chat_template_text(tokenizer, prompt)
+    encoded = tokenizer(encoded_text, add_special_tokens=False, truncation=False)
+    return len(encoded["input_ids"])
+
+
+def pack_evidence_to_budget(
+    query: Mapping[str, Any],
+    retrieval_row: Mapping[str, Any],
+    corpus_by_id: Mapping[int, Mapping[str, Any]],
+    *,
+    tokenizer: Any,
+    prompt_templates: Mapping[str, str],
+    top_k: int = 10,
+    max_input_tokens: int = 4096,
+) -> Dict[str, Any]:
+    """Add complete ranked evidence blocks until the prompt budget is full.
+
+    The first block that would exceed the budget and every later block are
+    omitted. This keeps the evidence rank order and prevents partial statutes.
+    """
+
+    selected: List[Dict[str, Any]] = []
+    for block in build_evidence_blocks(retrieval_row, corpus_by_id, top_k=top_k):
+        candidate = selected + [block]
+        evidence = "\n\n".join(item["text"] for item in candidate)
+        prompt = render_prompt("bm25", query, prompt_templates=prompt_templates, evidence=evidence)
+        if _prompt_token_count(tokenizer, prompt) > int(max_input_tokens):
+            break
+        selected.append(block)
+    evidence = "\n\n".join(item["text"] for item in selected)
+    prompt = render_prompt("bm25", query, prompt_templates=prompt_templates, evidence=evidence)
+    return {
+        "evidence": evidence,
+        "included_statute_ids": [int(item["statute_id"]) for item in selected],
+        "input_token_count_before_generation": _prompt_token_count(tokenizer, prompt),
+        "evidence_packing_version": "phase3_2_ranked_complete_blocks_v1",
+    }
 
 
 def apply_chat_template_text(tokenizer: Any, prompt: str) -> str:

@@ -6,6 +6,12 @@ The reproducibility work has completed the corrected Phase 2.1 retrieval rerun a
 
 The machine-readable audit and the exact acceptance results are in [`reports/README.md`](reports/README.md) and [`reports/scientific_audit.json`](reports/scientific_audit.json). Phase 3.5 citation evaluation and Phase 4 training/ablation are intentionally deferred pending review of these baselines.
 
+## Phase 3.2 status (2026-08-14)
+
+The final baseline freeze is complete pending commit publication. Gold reconciliation is non-positional and formatting-only: 309/309 queries have deterministic resolved sets, with 267 raw-clean records, 42 order-only conflicts, and 0 unresolved or true-set-conflicted records. The strict Level A/B high-confidence subset contains 11 queries; Level C matches remain separately reported.
+
+BM25 v2 was rerun for both Qwen2.5-7B and Qwen3-4B with deterministic complete-statute-block packing. All 618 records are successful, with no prompt truncation or partially visible statute blocks. Dense CLS is the primary retriever candidate; Hybrid remains the comparison baseline. See [`reports/final_baseline_report.md`](reports/final_baseline_report.md) and [`reports/final_baseline_manifest.json`](reports/final_baseline_manifest.json). Phase 3.5 citation analysis and Phase 4 repair/training remain deferred.
+
 面向中文法律咨询的可复现实验项目。当前只实现研究方案中的 Phase 0–1：项目骨架、LeCoQA 原始数据准备、统一 JSONL 转换、统计、人工抽样检查和基础测试。
 
 当前阶段暂不训练模型，也不实现 BM25、Dense、Hybrid、生成或验证模块。这样可以先把数据入口和可重复性固定下来，再进入检索实验。

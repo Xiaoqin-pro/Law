@@ -8,7 +8,18 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from citelaw.generation import build_evidence, render_prompt  # noqa: E402
+from citelaw.generation import build_evidence, pack_evidence_to_budget, render_prompt  # noqa: E402
+
+
+class CharacterTokenizer:
+    def apply_chat_template(self, messages, tokenize=False, add_generation_prompt=True):
+        return messages[0]["content"]
+
+    def __call__(self, text, add_special_tokens=False, truncation=False, return_offsets_mapping=False):
+        result = {"input_ids": list(range(len(text)))}
+        if return_offsets_mapping:
+            result["offset_mapping"] = [(index, index + 1) for index in range(len(text))]
+        return result
 
 
 class GenerationTests(unittest.TestCase):
@@ -29,6 +40,25 @@ class GenerationTests(unittest.TestCase):
     def test_rag_prompt_contains_evidence(self) -> None:
         prompt = render_prompt("hybrid", self.query, prompt_templates={"direct": "", "rag": "Q={question} E={evidence}"}, evidence="法条正文")
         self.assertIn("法条正文", prompt)
+
+
+    def test_budget_packing_keeps_complete_ranked_blocks(self) -> None:
+        row = {"results": [{"statute_id": 1}, {"statute_id": 2}]}
+        corpus = {
+            1: {"statute_id": 1, "statute_name": "A", "statute_text": "one"},
+            2: {"statute_id": 2, "statute_name": "B", "statute_text": "two"},
+        }
+        packed = pack_evidence_to_budget(
+            self.query,
+            row,
+            corpus,
+            tokenizer=CharacterTokenizer(),
+            prompt_templates={"direct": "", "rag": "Q={question} E={evidence}"},
+            top_k=2,
+            max_input_tokens=45,
+        )
+        self.assertEqual(packed["included_statute_ids"], [1])
+        self.assertEqual(packed["evidence_packing_version"], "phase3_2_ranked_complete_blocks_v1")
 
 
 if __name__ == "__main__":
