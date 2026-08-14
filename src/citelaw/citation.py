@@ -123,6 +123,7 @@ class CitationIndex:
     """Canonical lookup tables built from ``corpus.jsonl``."""
 
     statute_by_id: Mapping[int, Mapping[str, Any]]
+    canonical_laws: Tuple[str, ...]
     law_article_to_ids: Mapping[Tuple[str, str], Tuple[int, ...]]
     alias_to_laws: Mapping[str, Tuple[str, ...]]
     alias_article_to_ids: Mapping[Tuple[str, str], Tuple[int, ...]]
@@ -161,6 +162,7 @@ class CitationIndex:
 
         return cls(
             statute_by_id=statute_by_id,
+            canonical_laws=tuple(sorted(law_to_ids)),
             law_article_to_ids={key: tuple(sorted(ids)) for key, ids in law_article.items()},
             alias_to_laws={key: tuple(sorted(values)) for key, values in alias_to_laws.items()},
             alias_article_to_ids={key: tuple(sorted(ids)) for key, ids in alias_article.items()},
@@ -185,7 +187,7 @@ class CitationIndex:
                 1 for ids in self.law_article_to_ids.values() if len(ids) > 1
             ),
             "ambiguous_key_examples": ambiguous_keys[:20],
-            "law_count": len(self.alias_to_laws),
+            "law_count": len(self.canonical_laws),
             "alias_count": len(self.alias_to_laws),
         }
 

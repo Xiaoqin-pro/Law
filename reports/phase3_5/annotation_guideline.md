@@ -1,29 +1,30 @@
-# Phase 3.5B 人工审核指南（仅供人工填写）
+# Phase 3.5B semantic-review guideline
 
-本文件对应 `manual_audit.xlsx`。Phase 3.5A 的自动结果只判断：引用是否被解析、法条是否存在、是否命中 gold 集合、是否位于模型实际可见 evidence，以及 gold evidence 是否进入上下文；它不判断法律结论是否正确。
+This workbook is a human-review instrument. Phase 3.5A automatically checks citation parsing, corpus existence, set-based gold membership, visibility in the model's evidence, and whether gold evidence entered context. It does not decide legal semantic correctness.
 
-## 填写范围
+## First-round scope
 
-第一轮只填写 `primary_answers` 工作表中的 Direct 与 Dense 四类答案。`additional_context` 仅用于对照，不作为第一轮主要标注对象。
+Review only `primary_answers`: Dense CLS outputs for 60 queries × 2 models = 120 answers. Direct, BM25, and Hybrid remain in `additional_context` for comparison only.
 
-## 字段定义
+## Multi-label annotation fields
 
-- `overall_answer_quality`：`correct` / `partially_correct` / `incorrect` / `uncertain`
-- `citation_failure_type`：`none` / `fabricated_citation` / `wrong_existing_citation` / `unsupported_by_cited_evidence` / `missing_relevant_citation` / `mixed` / `uncertain`
-- `unsupported_extension`：`yes` / `no` / `uncertain`
-- `retrieval_failure_contributed`：`yes` / `no` / `not_applicable` / `uncertain`
-- `evidence_misuse`：`yes` / `no` / `uncertain`
-- `reviewer_confidence`：`high` / `medium` / `low`
+- `overall_answer_quality`: `correct` / `partially_correct` / `incorrect` / `uncertain`
+- `fabricated_citation_present`: `yes` / `no` / `uncertain`
+- `wrong_existing_citation_present`: `yes` / `no` / `uncertain`
+- `unsupported_by_cited_evidence_present`: `yes` / `no` / `uncertain`
+- `missing_relevant_citation_present`: `yes` / `no` / `uncertain`
+- `unsupported_extension_present`: `yes` / `no` / `uncertain`
+- `evidence_misuse_present`: `yes` / `no` / `uncertain`
+- `retrieval_failure_contributed`: `yes` / `no` / `not_applicable` / `uncertain`
+- `primary_failure_type`: `none` / `fabricated_citation` / `wrong_existing_citation` / `unsupported_by_cited_evidence` / `missing_relevant_citation` / `unsupported_extension` / `evidence_misuse` / `retrieval_failure` / `mixed` / `uncertain`
+- `gold_evidence_semantically_sufficient`: `yes` / `partial` / `no` / `uncertain`
+- `failure_origin`: `retrieval` / `generation` / `both` / `neither` / `uncertain`
+- `reviewer_id` and `annotation_round`: leave blank in this round; reserved for inter-annotator agreement.
 
-## 重要边界
+Use the multi-label columns to record every observed failure. Use `primary_failure_type` only for the main source; do not hide multiple failures inside `mixed`.
 
-“法条存在”“citation 命中 gold”“citation 在可见 evidence 中”都不能替代语义支持判断。只有在阅读问题、参考答案、法条正文和模型答案后，才填写 `unsupported_by_cited_evidence`、`evidence_misuse` 或法律结论质量。
+## Boundary
 
-- Fabricated Citation：corpus 中不存在该法条。
-- Wrong Existing Citation：法条真实存在，但不是当前问题/结论对应的正确引用。
-- Unsupported by Cited Evidence：法条存在，但正文不能支持答案中的相关法律主张。
-- Missing Relevant Citation：答案提出了需要法律依据的结论，却没有给出应有的显式引用。
-- Unsupported Extension：在法条或题目事实之外擅自增加期限、金额、条件、责任形式、例外或程序要求等具体结论。
-- Evidence Misuse：模型看到了相关 evidence，但仍然错误解释、扩大或适用它。
+Citation existence, citation-gold membership, and citation visibility do not replace semantic-support judgment. A citation outside gold is not automatically legally wrong, and a citation inside gold is not automatically sufficient. When statutory conflicts or specialist interpretation is unclear, use `uncertain` and `reviewer_confidence=low`; do not guess.
 
-不要把语言风格、答案长短或措辞不漂亮本身标为 citation failure。
+The selected queries retain `original_stratum`, `stratum_population_N`, `stratum_sample_n`, `selection_probability`, and `sampling_weight`. This is a stratified diagnostic sample, not a simple random sample. Unweighted annotation proportions must not be reported as 309-query prevalence; use the stored weights for any post-stratified estimate.

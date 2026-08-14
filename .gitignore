@@ -19,3 +19,4 @@ outputs/
 # Phase 3.5 workbook previews/build support files
 work/
 reports/phase3_5/manual_audit.xlsx.inspect.ndjson
+reports/phase3_5/parser_qa.xlsx.inspect.ndjson

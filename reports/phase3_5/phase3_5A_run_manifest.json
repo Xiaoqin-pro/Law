@@ -1,5 +1,5 @@
 {
-  "analysis_version": "phase3_5A_v1_deterministic_citation_analysis",
+  "analysis_version": "phase3_5B0_v1_analysis_audit_hotfix",
   "frozen_commit": "b3679ade8b233b71e5d3812dd44184aabee05f8f",
   "manifest_version": "phase3_2_1_v1_bm25_encoding_fixed_freeze",
   "integrity": {
@@ -162,7 +162,7 @@
     "unstructured_count": 0,
     "duplicate_canonical_key_count": 0,
     "ambiguous_key_examples": [],
-    "law_count": 1260,
+    "law_count": 1258,
     "alias_count": 1260
   },
   "answer_count": 2472,
@@ -177,13 +177,25 @@
       "S4_gold_not_visible_and_not_gold_cited": 87
     },
     "stratum_selected_counts": {
-      "S4_gold_not_visible_and_not_gold_cited": 15,
+      "S4_gold_not_visible_and_not_gold_cited": 29,
       "S1_gold_visible_and_gold_cited": 15,
       "S2_gold_visible_but_not_gold_cited": 15,
-      "FILL_FROM_OTHER_STRATA": 14,
       "S3_gold_not_visible_but_gold_cited": 1
     },
     "seed": 42
+  },
+  "parser_qa_sample": {
+    "selected_counts": {
+      "resolved_unique": 40,
+      "unresolved_or_uncertain": 40,
+      "no_conventional_citation_answer": 20
+    },
+    "available_counts": {
+      "resolved_unique": 1465,
+      "unresolved_or_uncertain": 364,
+      "no_conventional_citation_answer": 1375
+    },
+    "manual_fields_blank": true
   },
   "outputs": [
     "citation_index_audit.json",
@@ -195,9 +207,12 @@
     "retrieval_citation_matrix.csv",
     "citation_metric_bootstrap.csv",
     "manual_audit_data.json",
+    "sampling_manifest.json",
+    "parser_qa_data.json",
+    "parser_qa.xlsx",
     "annotation_guideline.md",
     "phase3_5A_report_zh.md",
     "phase3_5_checkpoint_report.md"
   ],
-  "status": "complete_stop_before_phase3_5B"
+  "status": "complete_stop_before_phase3_5B1"
 }

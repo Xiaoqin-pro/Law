@@ -86,6 +86,30 @@ def safe_rate(numerator: float, denominator: float) -> Optional[float]:
     return None if denominator == 0 else float(numerator) / float(denominator)
 
 
+def occurrence_gold_match_rate(
+    citations: Sequence[Mapping[str, Any]], gold_ids: Iterable[int]
+) -> Optional[float]:
+    """Match resolved citation occurrences to gold statute IDs.
+
+    This deliberately counts occurrences, not distinct statute IDs.  Thus a
+    duplicated gold citation contributes two matched occurrences, while a
+    mixed ``[gold, wrong]`` answer contributes one match out of two.
+    """
+
+    gold = {int(value) for value in gold_ids}
+    resolved = [
+        citation
+        for citation in citations
+        if citation.get("parse_status") == "resolved_unique"
+    ]
+    matched = sum(
+        1
+        for citation in resolved
+        if int(citation["canonical_statute_id"]) in gold
+    )
+    return safe_rate(matched, len(resolved))
+
+
 def mean(values: Sequence[Optional[float]]) -> Optional[float]:
     clean = [float(value) for value in values if value is not None]
     return None if not clean else sum(clean) / len(clean)
@@ -292,12 +316,20 @@ def build_evaluation_rows(
             gold_visible = bool(gold & visible_set) if evidence_applicable else None
             citation_gold_match = bool(gold & resolved_set)
             all_resolved = bool(citations) and all(citation.get("parse_status") == "resolved_unique" for citation in citations)
-            all_exist = all_resolved
+            answer_has_all_existing_citations = all_resolved
             any_gold = bool(gold & resolved_set)
             all_gold = bool(citations) and all(citation.get("parse_status") == "resolved_unique" and int(citation["canonical_statute_id"]) in gold for citation in citations)
-            all_visible = bool(citations) and all(citation.get("parse_status") == "resolved_unique" and int(citation["canonical_statute_id"]) in visible_set for citation in citations) if evidence_applicable else None
+            answer_has_all_visible_citations = bool(citations) and all(citation.get("parse_status") == "resolved_unique" and int(citation["canonical_statute_id"]) in visible_set for citation in citations) if evidence_applicable else None
             visible_resolved_count = sum(1 for citation in citations if citation.get("parse_status") == "resolved_unique" and int(citation["canonical_statute_id"]) in visible_set)
             parse_uncertain = any(citation.get("parse_status") != "resolved_unique" for citation in citations)
+            gold_citation_occurrence_count = sum(
+                1 for citation in citations
+                if citation.get("parse_status") == "resolved_unique"
+                and int(citation["canonical_statute_id"]) in gold
+            )
+            marker_visible_count = sum(1 for statute_id in evidence_marker_ids if statute_id in visible_set)
+            marker_gold_count = sum(1 for statute_id in evidence_marker_ids if statute_id in gold)
+            any_attribution = bool(citations or evidence_marker_ids)
             quality = quality_metrics(str(query.get("reference_answer") or ""), answer)
             output.append({
                 "query_id": query_id,
@@ -316,6 +348,9 @@ def build_evaluation_rows(
                 "citations": citations,
                 "evidence_marker_ids": evidence_marker_ids,
                 "evidence_marker_count": len(evidence_marker_ids),
+                "evidence_marker_visible_count": marker_visible_count if evidence_applicable else None,
+                "evidence_marker_gold_count": marker_gold_count,
+                "any_attribution_presence": any_attribution,
                 "citation_count": len(citations),
                 "resolved_citation_count": len(resolved_ids),
                 "unresolved_citation_count": sum(1 for citation in citations if citation.get("parse_status") == "unresolved"),
@@ -323,12 +358,13 @@ def build_evaluation_rows(
                 "malformed_citation_count": sum(1 for citation in citations if citation.get("parse_status") == "malformed"),
                 "has_explicit_citation": bool(citations),
                 "all_citations_resolved": all_resolved,
-                "all_citations_exist": all_exist,
+                "answer_has_all_existing_citations": answer_has_all_existing_citations,
                 "any_gold_citation": any_gold,
                 "all_citations_gold": all_gold,
-                "gold_citation_match_rate": safe_rate(len(gold & resolved_set), len(resolved_ids)),
+                "gold_citation_occurrence_count": gold_citation_occurrence_count,
+                "gold_citation_match_rate": occurrence_gold_match_rate(citations, gold),
                 "visible_resolved_citation_count": visible_resolved_count if evidence_applicable else None,
-                "all_citations_in_visible_evidence": all_visible,
+                "answer_has_all_visible_citations": answer_has_all_visible_citations,
                 "citation_parse_uncertain": parse_uncertain,
                 "gold_visible": gold_visible,
                 "gold_visible_count": len(gold & visible_set) if evidence_applicable else None,
@@ -364,7 +400,18 @@ def automatic_metrics(rows: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]
         resolved = sum(int(row["resolved_citation_count"]) for row in group)
         unresolved = sum(int(row["unresolved_citation_count"]) for row in group)
         ambiguous = sum(int(row["ambiguous_citation_count"]) for row in group)
-        gold_matches = sum(sum(1 for citation in row["citations"] if citation.get("parse_status") == "resolved_unique" and int(citation["canonical_statute_id"]) in set(row["canonical_gold_ids"])) for row in group)
+        gold_matches = sum(
+            sum(
+                1
+                for citation in row["citations"]
+                if citation.get("parse_status") == "resolved_unique"
+                and int(citation["canonical_statute_id"]) in set(row["canonical_gold_ids"])
+            )
+            for row in group
+        )
+        marker_count = sum(int(row["evidence_marker_count"]) for row in group)
+        marker_visible = sum(int(row["evidence_marker_visible_count"] or 0) for row in group if row["visible_evidence_applicable"])
+        marker_gold = sum(int(row["evidence_marker_gold_count"]) for row in group)
         visible_resolved = sum(int(row["visible_resolved_citation_count"] or 0) for row in group if row["visible_evidence_applicable"])
         visible_resolved_denominator = sum(int(row["resolved_citation_count"]) for row in group if row["visible_evidence_applicable"])
         applicable = [row for row in group if row["visible_evidence_applicable"]]
@@ -381,12 +428,19 @@ def automatic_metrics(rows: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]
             "unresolved_citation_rate": safe_rate(unresolved, citations),
             "ambiguous_citation_rate": safe_rate(ambiguous, citations),
             "citation_existence_rate": safe_rate(resolved, citations),
-            "all_citations_exist_rate": safe_rate(sum(bool(row["all_citations_exist"]) for row in citation_present), len(citation_present)),
+            "all_citations_exist_given_citation": safe_rate(sum(bool(row["answer_has_all_existing_citations"]) for row in citation_present), len(citation_present)),
+            "answer_all_citations_exist_joint": safe_rate(sum(bool(row["answer_has_all_existing_citations"]) for row in group), len(group)),
             "gold_citation_match_rate": safe_rate(gold_matches, resolved),
             "answer_any_gold_citation_rate": safe_rate(sum(bool(row["any_gold_citation"]) for row in group), len(group)),
             "answer_all_citations_gold_rate": safe_rate(sum(bool(row["all_citations_gold"]) for row in citation_present), len(citation_present)),
+            "evidence_marker_presence_rate": safe_rate(sum(bool(row["evidence_marker_count"]) for row in group), len(group)),
+            "mean_evidence_marker_count": safe_rate(marker_count, len(group)),
+            "marker_visible_consistency_rate": safe_rate(marker_visible, sum(int(row["evidence_marker_count"]) for row in applicable)) if applicable else None,
+            "marker_gold_match_rate": safe_rate(marker_gold, marker_count),
+            "any_attribution_presence_rate": safe_rate(sum(bool(row["any_attribution_presence"]) for row in group), len(group)),
             "visible_evidence_consistency_rate": safe_rate(visible_resolved, visible_resolved_denominator) if applicable else None,
-            "all_citations_in_visible_evidence_rate": safe_rate(sum(bool(row["all_citations_in_visible_evidence"]) for row in citation_present if row["visible_evidence_applicable"]), sum(1 for row in citation_present if row["visible_evidence_applicable"])) if applicable else None,
+            "all_citations_visible_given_citation": safe_rate(sum(bool(row["answer_has_all_visible_citations"]) for row in citation_present if row["visible_evidence_applicable"]), sum(1 for row in citation_present if row["visible_evidence_applicable"])) if applicable else None,
+            "answer_all_citations_visible_joint": safe_rate(sum(bool(row["answer_has_all_visible_citations"]) for row in applicable), len(applicable)) if applicable else None,
             "gold_evidence_visible_rate": safe_rate(sum(bool(row["gold_visible"]) for row in applicable), len(applicable)) if applicable else None,
             "full_gold_recall_in_visible_evidence": mean([row["full_gold_recall_in_visible_evidence"] for row in applicable]) if applicable else None,
             "semantic_review_required_count": sum(bool(row["needs_semantic_review"]) for row in group),
@@ -452,12 +506,12 @@ def paired_bootstrap(rows: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]:
     comparisons = [("direct", "bm25"), ("direct", "dense"), ("direct", "hybrid"), ("bm25", "dense"), ("dense", "hybrid")]
     metric_getters = {
         "citation_presence": lambda row: float(bool(row["has_explicit_citation"])),
-        "all_citations_exist": lambda row: float(bool(row["all_citations_exist"])),
+        "answer_all_citations_exist_joint": lambda row: float(bool(row["answer_has_all_existing_citations"])),
         "any_gold_citation": lambda row: float(bool(row["any_gold_citation"])),
         "bleu": lambda row: float(row["quality"]["bleu"]),
         "meteor": lambda row: float(row["quality"]["meteor"]),
         "rouge_l": lambda row: float(row["quality"]["rouge_l"]),
-        "all_citations_visible": lambda row: float(bool(row["all_citations_in_visible_evidence"])),
+        "answer_all_citations_visible_joint": lambda row: float(bool(row["answer_has_all_visible_citations"])),
     }
     output: List[Dict[str, Any]] = []
     rng = np.random.default_rng(SEED)
@@ -465,7 +519,7 @@ def paired_bootstrap(rows: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]:
         for left, right in comparisons:
             query_ids = sorted(set(by_pair[(model, left)]) & set(by_pair[(model, right)]))
             for metric_name, getter in metric_getters.items():
-                if metric_name == "all_citations_visible" and (left == "direct" or right == "direct"):
+                if metric_name == "answer_all_citations_visible_joint" and (left == "direct" or right == "direct"):
                     continue
                 left_values = np.array([getter(by_pair[(model, left)][query_id]) for query_id in query_ids], dtype=float)
                 right_values = np.array([getter(by_pair[(model, right)][query_id]) for query_id in query_ids], dtype=float)
@@ -523,22 +577,52 @@ def make_manual_selection(rows: Sequence[Mapping[str, Any]], corpus_index: Any) 
             stratum = "S4_gold_not_visible_and_not_gold_cited"
         strata[stratum].append(query_id)
     rng = random.Random(SEED)
-    desired = 15
+    ordered_strata = ["S1_gold_visible_and_gold_cited", "S2_gold_visible_but_not_gold_cited", "S3_gold_not_visible_but_gold_cited", "S4_gold_not_visible_and_not_gold_cited"]
+    sample_counts = {stratum: min(15, len(strata.get(stratum, []))) for stratum in ordered_strata}
+    remaining_count = 60 - sum(sample_counts.values())
+    # Redistribute an under-populated stratum's quota to S4 first.  For this
+    # diagnostic design, S4 is the intended negative-control comparison
+    # stratum; with the frozen populations this yields S1=15, S2=15, S3=1,
+    # S4=29.  The source stratum is retained for every query; there is no
+    # synthetic FILL stratum and every sampling probability is recoverable as
+    # n_h / N_h.
+    redistribution_priority = [
+        "S4_gold_not_visible_and_not_gold_cited",
+        "S1_gold_visible_and_gold_cited",
+        "S2_gold_visible_but_not_gold_cited",
+        "S3_gold_not_visible_but_gold_cited",
+    ]
+    while remaining_count > 0:
+        candidates = [
+            stratum
+            for stratum in redistribution_priority
+            if sample_counts[stratum] < len(strata.get(stratum, []))
+        ]
+        if not candidates:
+            raise RuntimeError("Cannot allocate the requested 60-query sample across Dense strata.")
+        stratum = candidates[0]
+        sample_counts[stratum] += 1
+        remaining_count -= 1
     selected: List[Dict[str, Any]] = []
-    for stratum in ["S1_gold_visible_and_gold_cited", "S2_gold_visible_but_not_gold_cited", "S3_gold_not_visible_but_gold_cited", "S4_gold_not_visible_and_not_gold_cited"]:
-        candidates = sorted(strata.get(stratum, []))
-        take = min(desired, len(candidates))
-        chosen = sorted(rng.sample(candidates, take)) if take else []
-        selected.extend({"query_id": query_id, "stratum": stratum} for query_id in chosen)
-    # Fill quotas not available in an under-populated stratum from the
-    # remaining pool, preserving the seed-defined random order.
-    remaining_count = 60 - len(selected)
-    selected_ids = {item["query_id"] for item in selected}
-    if remaining_count > 0:
-        remaining = sorted(set(by_query) - selected_ids)
-        rng.shuffle(remaining)
-        for query_id in remaining[:remaining_count]:
-            selected.append({"query_id": query_id, "stratum": "FILL_FROM_OTHER_STRATA"})
+    for stratum in ordered_strata:
+        population = len(strata.get(stratum, []))
+        take = sample_counts[stratum]
+        chosen = sorted(rng.sample(sorted(strata.get(stratum, [])), take)) if take else []
+        reason = "target_quota" if take <= 15 else "redistributed_quota_from_underpopulated_stratum"
+        if population < 15:
+            reason = "all_available_and_redistributed_quota"
+        for query_id in chosen:
+            selected.append({
+                "query_id": query_id,
+                "stratum": stratum,
+                "original_stratum": stratum,
+                "sampling_stratum": stratum,
+                "stratum_population_N": population,
+                "stratum_sample_n": take,
+                "selection_probability": safe_rate(take, population),
+                "sampling_weight": safe_rate(population, take),
+                "selection_reason": reason,
+            })
     selected = sorted(selected, key=lambda item: item["query_id"])
     if len(selected) != 60 or len({item["query_id"] for item in selected}) != 60:
         raise RuntimeError(f"Manual sample has {len(selected)} unique queries, expected 60.")
@@ -549,13 +633,20 @@ def make_manual_selection(rows: Sequence[Mapping[str, Any]], corpus_index: Any) 
     for item in selected:
         query_id = item["query_id"]
         for model in MODEL_ORDER:
-            for method in ["direct", "dense"]:
+            for method in ["dense"]:
                 row = by_key[(query_id, model, method)]
                 names, texts = corpus_names_and_texts(corpus_index, row["canonical_gold_ids"])
                 visible_names, visible_texts = corpus_names_and_texts(corpus_index, row["visible_evidence_ids"])
                 primary_answers.append({
                     "query_id": query_id,
                     "stratum": item["stratum"],
+                    "original_stratum": item["original_stratum"],
+                    "sampling_stratum": item["sampling_stratum"],
+                    "stratum_population_N": item["stratum_population_N"],
+                    "stratum_sample_n": item["stratum_sample_n"],
+                    "selection_probability": item["selection_probability"],
+                    "sampling_weight": item["sampling_weight"],
+                    "selection_reason": item["selection_reason"],
                     "model": model,
                     "method": method,
                     "method_label": METHOD_LABELS[method],
@@ -575,19 +666,34 @@ def make_manual_selection(rows: Sequence[Mapping[str, Any]], corpus_index: Any) 
                     "auto_citation_outside_visible": row["citation_outside_visible_evidence"],
                     "auto_missing_citation": row["missing_citation"],
                     "overall_answer_quality": "",
-                    "citation_failure_type": "",
-                    "unsupported_extension": "",
+                    "fabricated_citation_present": "",
+                    "wrong_existing_citation_present": "",
+                    "unsupported_by_cited_evidence_present": "",
+                    "missing_relevant_citation_present": "",
+                    "unsupported_extension_present": "",
+                    "evidence_misuse_present": "",
                     "retrieval_failure_contributed": "",
-                    "evidence_misuse": "",
+                    "primary_failure_type": "",
+                    "gold_evidence_semantically_sufficient": "",
+                    "failure_origin": "",
+                    "reviewer_id": "",
+                    "annotation_round": "",
                     "reviewer_confidence": "",
                     "reviewer_notes": "",
                 })
-            for method in ["bm25", "hybrid"]:
+            for method in ["direct", "bm25", "hybrid"]:
                 row = by_key[(query_id, model, method)]
                 visible_names, visible_texts = corpus_names_and_texts(corpus_index, row["visible_evidence_ids"])
                 additional_context.append({
                     "query_id": query_id,
                     "stratum": item["stratum"],
+                    "original_stratum": item["original_stratum"],
+                    "sampling_stratum": item["sampling_stratum"],
+                    "stratum_population_N": item["stratum_population_N"],
+                    "stratum_sample_n": item["stratum_sample_n"],
+                    "selection_probability": item["selection_probability"],
+                    "sampling_weight": item["sampling_weight"],
+                    "selection_reason": item["selection_reason"],
                     "model": model,
                     "method": method,
                     "method_label": METHOD_LABELS[method],
@@ -607,12 +713,90 @@ def make_manual_selection(rows: Sequence[Mapping[str, Any]], corpus_index: Any) 
                 })
     return {
         "seed": SEED,
-        "selection_rule": "Pooled Dense CLS across both models; S1-S4 target 15 each; under-populated strata filled from remaining strata using seed 42.",
+        "selection_rule": "Pooled Dense CLS across both models; target 15 per S1-S4, with any under-populated quota redistributed to S4 first as the diagnostic negative-control stratum; source stratum and exact n/N weights are retained.",
         "stratum_available_counts": {key: len(value) for key, value in sorted(strata.items())},
-        "stratum_selected_counts": dict(Counter(item["stratum"] for item in selected)),
+        "stratum_selected_counts": dict(Counter(item["original_stratum"] for item in selected)),
+        "sampling_design": "stratified diagnostic sample; unweighted manual proportions are not population prevalence",
         "selected_queries": selected,
         "primary_answers": primary_answers,
         "additional_context": additional_context,
+    }
+
+
+def make_parser_qa_sample(rows: Sequence[Mapping[str, Any]], corpus_index: Any) -> Dict[str, Any]:
+    """Create a fixed, non-semantic 100-unit parser audit sample."""
+
+    rng = random.Random(SEED)
+    resolved_units: List[Dict[str, Any]] = []
+    uncertain_units: List[Dict[str, Any]] = []
+    for row in rows:
+        for citation in row["citations"]:
+            unit = {
+                "unit_type": "resolved_citation" if citation.get("parse_status") == "resolved_unique" else "unresolved_or_uncertain_citation",
+                "query_id": row["query_id"],
+                "model": row["model"],
+                "method": row["method"],
+                "raw_answer": row["generated_answer"],
+                "raw_citation": citation.get("raw_citation", ""),
+                "parser_status": citation.get("parse_status"),
+                "normalized_law_name": citation.get("normalized_law_name"),
+                "article_number": citation.get("article_number"),
+                "resolved_statute_id": citation.get("canonical_statute_id"),
+                "resolved_statute_name": None,
+                "candidate_statute_ids": json.dumps(citation.get("candidate_statute_ids", []), ensure_ascii=False),
+                "extraction_correct": "",
+                "normalization_correct": "",
+                "statute_mapping_correct": "",
+                "actually_resolvable": "" if citation.get("parse_status") == "resolved_unique" else "",
+                "error_reason": "",
+                "notes": "",
+            }
+            if citation.get("canonical_statute_id") is not None:
+                statute = corpus_index.statute_by_id.get(int(citation["canonical_statute_id"]))
+                unit["resolved_statute_name"] = statute.get("statute_name") if statute else None
+                resolved_units.append(unit)
+            else:
+                uncertain_units.append(unit)
+    no_citation_answers = [row for row in rows if not row["has_explicit_citation"]]
+    if len(resolved_units) < 40 or len(uncertain_units) < 40 or len(no_citation_answers) < 20:
+        raise RuntimeError("Parser QA strata are smaller than the requested 40/40/20 sample.")
+    selected = []
+    selected.extend(rng.sample(resolved_units, 40))
+    selected.extend(rng.sample(uncertain_units, 40))
+    for row in rng.sample(no_citation_answers, 20):
+        selected.append({
+            "unit_type": "no_conventional_citation_answer",
+            "query_id": row["query_id"],
+            "model": row["model"],
+            "method": row["method"],
+            "raw_answer": row["generated_answer"],
+            "raw_citation": "",
+            "parser_status": "no_conventional_citation",
+            "normalized_law_name": "",
+            "article_number": "",
+            "resolved_statute_id": "",
+            "resolved_statute_name": "",
+            "candidate_statute_ids": "[]",
+            "extraction_correct": "",
+            "normalization_correct": "",
+            "statute_mapping_correct": "",
+            "actually_resolvable": "",
+            "error_reason": "",
+            "notes": "",
+        })
+    for index, row in enumerate(selected, start=1):
+        row["audit_unit_id"] = index
+    return {
+        "seed": SEED,
+        "sample_rule": "40 resolved_unique citations + 40 unresolved/ambiguous/malformed citations + 20 answers with no conventional citation",
+        "available_counts": {
+            "resolved_unique": len(resolved_units),
+            "unresolved_or_uncertain": len(uncertain_units),
+            "no_conventional_citation_answer": len(no_citation_answers),
+        },
+        "selected_counts": {"resolved_unique": 40, "unresolved_or_uncertain": 40, "no_conventional_citation_answer": 20},
+        "manual_fields_blank": True,
+        "rows": selected,
     }
 
 
@@ -649,6 +833,40 @@ def annotation_guideline() -> str:
 """
 
 
+def annotation_guideline() -> str:
+    return """# Phase 3.5B semantic-review guideline
+
+This workbook is a human-review instrument. Phase 3.5A automatically checks citation parsing, corpus existence, set-based gold membership, visibility in the model's evidence, and whether gold evidence entered context. It does not decide legal semantic correctness.
+
+## First-round scope
+
+Review only `primary_answers`: Dense CLS outputs for 60 queries × 2 models = 120 answers. Direct, BM25, and Hybrid remain in `additional_context` for comparison only.
+
+## Multi-label annotation fields
+
+- `overall_answer_quality`: `correct` / `partially_correct` / `incorrect` / `uncertain`
+- `fabricated_citation_present`: `yes` / `no` / `uncertain`
+- `wrong_existing_citation_present`: `yes` / `no` / `uncertain`
+- `unsupported_by_cited_evidence_present`: `yes` / `no` / `uncertain`
+- `missing_relevant_citation_present`: `yes` / `no` / `uncertain`
+- `unsupported_extension_present`: `yes` / `no` / `uncertain`
+- `evidence_misuse_present`: `yes` / `no` / `uncertain`
+- `retrieval_failure_contributed`: `yes` / `no` / `not_applicable` / `uncertain`
+- `primary_failure_type`: `none` / `fabricated_citation` / `wrong_existing_citation` / `unsupported_by_cited_evidence` / `missing_relevant_citation` / `unsupported_extension` / `evidence_misuse` / `retrieval_failure` / `mixed` / `uncertain`
+- `gold_evidence_semantically_sufficient`: `yes` / `partial` / `no` / `uncertain`
+- `failure_origin`: `retrieval` / `generation` / `both` / `neither` / `uncertain`
+- `reviewer_id` and `annotation_round`: leave blank in this round; reserved for inter-annotator agreement.
+
+Use the multi-label columns to record every observed failure. Use `primary_failure_type` only for the main source; do not hide multiple failures inside `mixed`.
+
+## Boundary
+
+Citation existence, citation-gold membership, and citation visibility do not replace semantic-support judgment. A citation outside gold is not automatically legally wrong, and a citation inside gold is not automatically sufficient. When statutory conflicts or specialist interpretation is unclear, use `uncertain` and `reviewer_confidence=low`; do not guess.
+
+The selected queries retain `original_stratum`, `stratum_population_N`, `stratum_sample_n`, `selection_probability`, and `sampling_weight`. This is a stratified diagnostic sample, not a simple random sample. Unweighted annotation proportions must not be reported as 309-query prevalence; use the stored weights for any post-stratified estimate.
+"""
+
+
 def format_pct(value: Optional[float]) -> str:
     return "N/A" if value is None else f"{value * 100:.2f}%"
 
@@ -660,6 +878,7 @@ def build_report(
     matrix: Sequence[Mapping[str, Any]],
     bootstrap: Sequence[Mapping[str, Any]],
     manual: Mapping[str, Any],
+    parser_qa: Mapping[str, Any],
     rows: Sequence[Mapping[str, Any]],
 ) -> str:
     by_key = {(row["model"], row["method"]): row for row in metrics}
@@ -668,7 +887,7 @@ def build_report(
         "",
         f"- Frozen baseline release commit: `{FROZEN_COMMIT}`",
         "- Scope: 2 models × 4 frozen methods × 309 queries = 2472 answers",
-        "- Phase 3.5A status: **complete; stop before Phase 3.5B and Phase 4**",
+        "- Phase 3.5A.1 / Phase 3.5B-0 status: **complete; stop before Phase 3.5B-1 and Phase 4**",
         "- No answer regeneration, retrieval change, prompt change, claim repair, verifier, or stress test was performed.",
         "",
         "## 1. 冻结 artifact 完整性",
@@ -681,24 +900,29 @@ def build_report(
         f"corpus 共 `{index_audit['statute_count']}` 条 statute，结构化 canonical key `{index_audit['structured_count']}` 条，重复 key `{index_audit['duplicate_canonical_key_count']}`，无法结构化 `{index_audit['unstructured_count']}`。",
         "法律名称只允许 corpus 内唯一 alias 映射；缺少法律名称、未知法律、非唯一映射均保留为 unresolved/ambiguous。",
         "",
-        "## 3. 自动 citation / answer 指标",
+        "## 3. Parser QA 与 marker attribution",
         "",
-        "下表的 `citation gold match` 只表示解析出的 statute_id 是否属于 set-based annotated gold，不等于法律语义正确；BLEU/METEOR/ROUGE-L 是字符/词元层面的 reference similarity proxy。BERTScore 在本环境未安装，因此不作虚构数值。答案中的内部 `[法条ID n]` evidence marker 单独记录，不当作传统法律 citation 计数。",
+        f"本轮生成固定 seed={SEED} 的 100-unit parser QA：40 个 resolved_unique、40 个 unresolved/uncertain、20 个无 conventional citation 的 answer。人工字段仍为空，当前不能据此估计 parser precision/false-negative rate。",
+        f"答案内部 evidence marker 共单独记录；marker metrics 已写入 `citation_metrics.csv`，不与 conventional citation 合并。",
         "",
-        "| Model | Method | Citation presence | Mean citations | Citation existence | All citations exist | Gold citation match | Gold evidence visible | Visible consistency | ROUGE-L |",
-        "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "## 4. 自动 citation / answer 指标",
+        "",
+        "下表的 `citation gold match` 按 citation occurrence 计算，不等于法律语义正确；BLEU/METEOR/ROUGE-L 是字符/词元层面的 reference similarity proxy。BERTScore 在本环境未安装，因此不作虚构数值。答案中的内部 `[法条ID n]` evidence marker 单独记录，不当作传统法律 citation 计数。",
+        "",
+        "| Model | Method | Conventional citation presence | Any attribution presence | Citation existence | All exist given citation | All exist joint | Gold citation match | Marker presence | Gold evidence visible | ROUGE-L |",
+        "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for model in MODEL_ORDER:
         for method in METHOD_ORDER:
             metric = by_key[(model, method)]
             lines.append(
-                f"| {model} | {METHOD_LABELS[method]} | {format_pct(metric['citation_presence_rate'])} | {metric['mean_citation_count']:.3f} | {format_pct(metric['citation_existence_rate'])} | {format_pct(metric['all_citations_exist_rate'])} | {format_pct(metric['gold_citation_match_rate'])} | {format_pct(metric['gold_evidence_visible_rate'])} | {format_pct(metric['visible_evidence_consistency_rate'])} | {metric['quality_rouge_l']:.4f} |"
+                f"| {model} | {METHOD_LABELS[method]} | {format_pct(metric['citation_presence_rate'])} | {format_pct(metric['any_attribution_presence_rate'])} | {format_pct(metric['citation_existence_rate'])} | {format_pct(metric['all_citations_exist_given_citation'])} | {format_pct(metric['answer_all_citations_exist_joint'])} | {format_pct(metric['gold_citation_match_rate'])} | {format_pct(metric['evidence_marker_presence_rate'])} | {format_pct(metric['gold_evidence_visible_rate'])} | {metric['quality_rouge_l']:.4f} |"
             )
     lines += [
         "",
-        "解释：`All citations exist` 与 `Citation existence` 的分母只包含至少有一个显式 citation 的答案；Direct 的 evidence consistency / gold evidence visible 为 N/A，因为 Direct 没有检索 evidence。unresolved/ambiguous citation 不会被自动标成 fabricated，而是保留为 parse-uncertain 并进入人工审核。",
+        "解释：`citation_existence_rate` 是 citation-level；`all_citations_exist_given_citation` 是有 conventional citation 答案中的 conditional rate；`answer_all_citations_exist_joint` 是全部 309 个答案中的 joint answer-level rate。RAG 的 visible 指标也同时报告 conditional 与 joint 版本。Direct 的 evidence consistency / gold evidence visible 为 N/A，因为 Direct 没有检索 evidence。unresolved/ambiguous citation 不会被自动标成 fabricated，而是保留为 parse-uncertain 并进入人工审核。",
         "",
-        "## 4. Dense-centered A/B/C/D diagnostic matrix",
+        "## 5. Dense-centered A/B/C/D diagnostic matrix",
         "",
         "A = gold evidence visible 且答案显式命中 gold；B = gold evidence visible 但没有显式命中 gold；C = gold evidence 不可见但答案命中 gold（只能标记为 requires manual review）；D = 两者均未发生。",
         "",
@@ -711,7 +935,7 @@ def build_report(
         "",
         "C 类没有被自动解释为参数记忆、数据泄漏或模型错误；这些只能进入人工审核。",
         "",
-        "## 5. Paired bootstrap",
+        "## 6. Paired bootstrap",
         "",
         f"所有 paired bootstrap 使用同一 query_id 配对、seed={SEED}、{BOOTSTRAP_SAMPLES} 次重采样；`difference = right_method - left_method`。CI 跨 0 时不写 statistically significant。完整结果见 `citation_metric_bootstrap.csv`。",
         "",
@@ -719,7 +943,7 @@ def build_report(
     ]
     for left, right in [("direct", "dense"), ("bm25", "dense"), ("dense", "hybrid")]:
         for model in MODEL_ORDER:
-            selected = [row for row in bootstrap if row["model"] == model and row["left_method"] == left and row["right_method"] == right and row["metric"] in {"citation_presence", "all_citations_exist", "any_gold_citation", "all_citations_visible"}]
+            selected = [row for row in bootstrap if row["model"] == model and row["left_method"] == left and row["right_method"] == right and row["metric"] in {"citation_presence", "answer_all_citations_exist_joint", "any_gold_citation", "answer_all_citations_visible_joint"}]
             if not selected:
                 continue
             lines.append(f"- {model} {METHOD_LABELS[left]} → {METHOD_LABELS[right]}：")
@@ -728,27 +952,27 @@ def build_report(
                 lines.append(f"  - {item['metric']}: difference={item['difference_right_minus_left']:.4f}, 95% CI=[{item['ci_low']:.4f}, {item['ci_high']:.4f}]（{significance}）")
     lines += [
         "",
-        "## 6. 60-query manual audit sample",
+        "## 7. 60-query manual audit sample",
         "",
-        f"选取 `{len(manual['selected_queries'])}` 个唯一 query_id；按两套 Dense CLS 的 pooled gold_visible / gold_citation_match 分层，seed={SEED}。实际分层可用数：`{manual['stratum_available_counts']}`；选入数：`{manual['stratum_selected_counts']}`。S3 不足 15 时按预先声明的规则从其他层补足，不进行人工挑样。",
+        f"选取 `{len(manual['selected_queries'])}` 个唯一 query_id；按两套 Dense CLS 的 pooled gold_visible / gold_citation_match 分层，seed={SEED}。实际分层可用数：`{manual['stratum_available_counts']}`；选入数：`{manual['stratum_selected_counts']}`。每条样本保留 original_stratum、selection_probability 和 sampling_weight；该样本用于 failure diagnosis，不能把未加权的人工比例直接解释为 309-query population prevalence。",
         "",
-        "`manual_audit.xlsx` 已包含 primary_answers（Direct/Dense 四类答案）和 additional_context（BM25/Hybrid 对照）两个数据表；所有语义标注字段保持空白，等待人工填写。",
+        "`manual_audit.xlsx` 的 primary_answers 现在只包含 Dense CLS 的 60 queries × 2 models = 120 条首轮语义审核对象；Direct/BM25/Hybrid 保留在 additional_context 作为比较背景，所有人工字段保持空白。",
         "",
-        "## 7. 当前可以支持的结论",
+        "## 8. 当前可以支持的结论",
         "",
         "1. 可以报告不同 baseline 的显式 citation presence、解析成功率、corpus existence、set-based gold match，以及 RAG 的实际 visible-evidence consistency。",
         "2. 可以报告 Dense 的 retrieval gold visibility 是否传递到显式 citation 行为，并用 A/B/C/D 量化 retrieval 与 generation/citation 的关系。",
         "3. 可以报告 Direct、BM25、Dense、Hybrid 的 answer/reference lexical similarity proxy，但不得把这些 proxy 直接写成 legal correctness。",
         "",
-        "## 8. 当前不能支持的结论",
+        "## 9. 当前不能支持的结论",
         "",
         "1. 自动指标不能证明 citation 对答案主张具有法律语义支持，也不能自动判断 wrong legal conclusion、unsupported extension 或 evidence misuse。",
         "2. citation 在 gold 中不等于法律上正确；citation 不在 gold 中也不能自动等同于法律错误。",
         "3. C 类不能自动归因于参数记忆；Dense 的点估计优势不能据此写成显著优于 Hybrid。",
         "",
-        "## 9. 阶段停止点",
+        "## 10. 阶段停止点",
         "",
-        "Phase 3.5A 已完成：parser、automatic metrics、diagnostic matrix、bootstrap、manual_audit.xlsx、annotation_guideline.md、checkpoint report 均已生成。下一步必须先人工审核工作簿，再决定 Phase 3.5B；本次不进入 Phase 3.5B，不进入 Phase 4。",
+        "Phase 3.5A.1 / Phase 3.5B-0 已完成：指标口径 hotfix、parser QA、sampling manifest、Dense-only manual_audit.xlsx、annotation_guideline.md、checkpoint report 均已生成。parser QA 与语义人工审核仍待填写；本次不进入 Phase 3.5B-1，不进入 Phase 4。",
         "",
     ]
     return "\n".join(lines)
@@ -788,7 +1012,7 @@ def main() -> None:
     bootstrap = paired_bootstrap(evaluation_rows)
     write_csv(report_dir / "citation_metrics.csv", metrics, fieldnames=list(metrics[0].keys()))
     write_json(report_dir / "citation_metrics.json", {
-        "analysis_version": "phase3_5A_v1_deterministic_citation_analysis",
+        "analysis_version": "phase3_5B0_v1_analysis_audit_hotfix",
         "frozen_commit": FROZEN_COMMIT,
         "answer_count": len(evaluation_rows),
         "seed": SEED,
@@ -801,15 +1025,36 @@ def main() -> None:
         "model", "method", "method_label", "answer_count", "quality_bertscore_f1", "quality_bleu", "quality_meteor", "quality_rouge_l", "quality_metric_note",
     ])
     manual = make_manual_selection(evaluation_rows, corpus_index)
+    parser_qa = make_parser_qa_sample(evaluation_rows, corpus_index)
     write_json(report_dir / "manual_audit_data.json", manual)
+    write_json(report_dir / "parser_qa_data.json", parser_qa)
+    write_json(report_dir / "sampling_manifest.json", {
+        "sampling_version": "phase3_5B0_stratified_dense_pooled_v2",
+        "seed": SEED,
+        "selection_rule": manual["selection_rule"],
+        "stratum_available_counts": manual["stratum_available_counts"],
+        "stratum_selected_counts": manual["stratum_selected_counts"],
+        "sampling_design": manual["sampling_design"],
+        "selected_queries": [
+            {
+                key: item[key]
+                for key in [
+                    "query_id", "original_stratum", "sampling_stratum",
+                    "stratum_population_N", "stratum_sample_n",
+                    "selection_probability", "sampling_weight", "selection_reason",
+                ]
+            }
+            for item in manual["selected_queries"]
+        ],
+    })
     guideline = annotation_guideline()
     (report_dir / "annotation_guideline.md").write_text(guideline, encoding="utf-8")
-    report = build_report(integrity, index_audit, metrics, matrix, bootstrap, manual, evaluation_rows)
+    report = build_report(integrity, index_audit, metrics, matrix, bootstrap, manual, parser_qa, evaluation_rows)
     (report_dir / "phase3_5A_report_zh.md").write_text(report, encoding="utf-8")
     checkpoint = "# Phase 3.5A Checkpoint Report\n\n" + report.replace("# Phase 3.5A 自动评估与引用失败诊断", "## Phase 3.5A 自动评估与引用失败诊断")
     (report_dir / "phase3_5_checkpoint_report.md").write_text(checkpoint, encoding="utf-8")
     write_json(report_dir / "phase3_5A_run_manifest.json", {
-        "analysis_version": "phase3_5A_v1_deterministic_citation_analysis",
+        "analysis_version": "phase3_5B0_v1_analysis_audit_hotfix",
         "frozen_commit": FROZEN_COMMIT,
         "manifest_version": manifest.get("manifest_version"),
         "integrity": integrity,
@@ -823,6 +1068,11 @@ def main() -> None:
             "stratum_selected_counts": manual["stratum_selected_counts"],
             "seed": manual["seed"],
         },
+        "parser_qa_sample": {
+            "selected_counts": parser_qa["selected_counts"],
+            "available_counts": parser_qa["available_counts"],
+            "manual_fields_blank": parser_qa["manual_fields_blank"],
+        },
         "outputs": [
             "citation_index_audit.json",
             "citation_records.jsonl",
@@ -833,14 +1083,17 @@ def main() -> None:
             "retrieval_citation_matrix.csv",
             "citation_metric_bootstrap.csv",
             "manual_audit_data.json",
+            "sampling_manifest.json",
+            "parser_qa_data.json",
+            "parser_qa.xlsx",
             "annotation_guideline.md",
             "phase3_5A_report_zh.md",
             "phase3_5_checkpoint_report.md",
         ],
-        "status": "complete_stop_before_phase3_5B",
+        "status": "complete_stop_before_phase3_5B1",
     })
     print(json.dumps({
-        "status": "complete_stop_before_phase3_5B",
+        "status": "complete_stop_before_phase3_5B1",
         "answer_count": len(evaluation_rows),
         "citation_count": sum(int(row["citation_count"]) for row in evaluation_rows),
         "resolved_citation_count": sum(int(row["resolved_citation_count"]) for row in evaluation_rows),

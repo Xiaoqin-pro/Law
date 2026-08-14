@@ -7,6 +7,9 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
+sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
+
+from run_citation_analysis import occurrence_gold_match_rate  # noqa: E402
 
 from citelaw.citation import (  # noqa: E402
     build_citation_index,
@@ -89,6 +92,16 @@ class CitationParserTests(unittest.TestCase):
         text = "根据[法条ID 1]《民法典》第577条。"
         self.assertEqual(len(extract_citations(text, self.index)), 1)
         self.assertEqual(extract_statute_id_markers(text), [1])
+
+    def test_gold_citation_match_rate_is_occurrence_level(self) -> None:
+        duplicate_gold = extract_citations(
+            "《民法典》第577条、《民法典》第577条。", self.index
+        )
+        mixed_gold_and_wrong = extract_citations(
+            "《民法典》第577条、《刑法》第263条。", self.index
+        )
+        self.assertEqual(occurrence_gold_match_rate(duplicate_gold, {1}), 1.0)
+        self.assertEqual(occurrence_gold_match_rate(mixed_gold_and_wrong, {1}), 0.5)
 
 
 if __name__ == "__main__":
