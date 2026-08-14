@@ -1,0 +1,9 @@
+﻿model,method,method_label,answer_count,quality_bertscore_f1,quality_bleu,quality_meteor,quality_rouge_l,quality_metric_note
+qwen25_7b,direct,Direct,309,,0.12265323910312917,0.3755299169306625,0.2496210210512361,BLEU/METEOR/ROUGE-L are deterministic lexical similarity proxies; BERTScore unavailable in the frozen analysis environment.
+qwen25_7b,bm25,BM25 encoding-fixed,309,,0.1840041171972657,0.4402278817686039,0.30876738301228573,BLEU/METEOR/ROUGE-L are deterministic lexical similarity proxies; BERTScore unavailable in the frozen analysis environment.
+qwen25_7b,dense,Dense CLS,309,,0.19664533834718984,0.46529873406657285,0.31757886227206333,BLEU/METEOR/ROUGE-L are deterministic lexical similarity proxies; BERTScore unavailable in the frozen analysis environment.
+qwen25_7b,hybrid,Hybrid CLS,309,,0.19258036717702026,0.4630106656325779,0.3166124903094294,BLEU/METEOR/ROUGE-L are deterministic lexical similarity proxies; BERTScore unavailable in the frozen analysis environment.
+qwen3_4b,direct,Direct,309,,0.13452178395178144,0.43490734143288146,0.2504599359757099,BLEU/METEOR/ROUGE-L are deterministic lexical similarity proxies; BERTScore unavailable in the frozen analysis environment.
+qwen3_4b,bm25,BM25 encoding-fixed,309,,0.1785771673430472,0.4661665724733407,0.29529681497296456,BLEU/METEOR/ROUGE-L are deterministic lexical similarity proxies; BERTScore unavailable in the frozen analysis environment.
+qwen3_4b,dense,Dense CLS,309,,0.1919148386975991,0.49126811427438033,0.3111391290124184,BLEU/METEOR/ROUGE-L are deterministic lexical similarity proxies; BERTScore unavailable in the frozen analysis environment.
+qwen3_4b,hybrid,Hybrid CLS,309,,0.1806319192812309,0.48328695574978525,0.30104391472473263,BLEU/METEOR/ROUGE-L are deterministic lexical similarity proxies; BERTScore unavailable in the frozen analysis environment.
